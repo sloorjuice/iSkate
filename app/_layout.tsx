@@ -4,12 +4,16 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 
+import { HeaderTitle } from '@/components/HeaderTitle';
+import TabBarBackground from '@/components/ui/TabBarBackground';
+import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
+
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    Lalezar: require('../assets/fonts/Lalezar-Regular.ttf'),
   });
 
   if (!loaded) {
@@ -19,8 +23,27 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: TabBarBackground,
+          },
+          headerTintColor: Colors[colorScheme ?? 'light'].text,
+          headerTitleAlign: 'left',
+          headerTitle: () => <HeaderTitle />,
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            fontSize: 52,
+            fontFamily: 'Lalezar',
+          },
+        }}
+      >
+        <Stack.Screen
+          name="(tabs)"
+          options={{
+            title: 'iSkate',
+          }}
+        />
         <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style="auto" />
