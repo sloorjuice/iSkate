@@ -46,7 +46,8 @@
           "requestPermission": true,
           "locationPermission": "Allow iSkate to use your location"
         }
-      ]
+      ],
+      "expo-build-properties"
     ],
     "experiments": {
       "typedRoutes": true
