@@ -1,4 +1,4 @@
-import { db } from "@/utils/firebaseConfig";
+import { firestore } from "@/utils/firebaseConfig";
 import { collection, getDocs } from "firebase/firestore";
 import { useEffect, useState, type JSX } from "react";
 import { Platform, Text, View } from "react-native";
@@ -17,7 +17,7 @@ export default function SkateMap() {
 
   useEffect(() => {
     async function fetchSpots() {
-      const querySnapshot = await getDocs(collection(db, "skateSpots"));
+      const querySnapshot = await getDocs(collection(firestore, "skateSpots"));
       const spotsData: SkateSpot[] = [];
       querySnapshot.forEach((doc) => {
         spotsData.push({ id: doc.id, ...doc.data() } as SkateSpot);

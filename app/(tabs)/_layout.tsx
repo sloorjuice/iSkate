@@ -3,6 +3,7 @@ import React from 'react';
 import { Platform } from 'react-native';
 
 import { HapticTab } from '@/components/HapticTab';
+import { HeaderTitle } from '@/components/HeaderTitle';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
@@ -14,9 +15,19 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
+        headerStyle: {
+          backgroundColor: TabBarBackground,
+        },
+        headerTintColor: Colors[colorScheme ?? 'light'].text,
+        headerTitleAlign: 'left',
+        headerTitle: () => <HeaderTitle />,
+        headerTitleStyle: {
+          fontWeight: 'bold',
+          fontSize: 52,
+          fontFamily: 'Lalezar',
+        },
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         tabBarButton: HapticTab,
-        headerShown: false,
         tabBarBackground: TabBarBackground,
         tabBarStyle: Platform.select({
           ios: {
