@@ -10,7 +10,8 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.dirtyattic.iSkate"
+      "bundleIdentifier": "com.dirtyattic.iSkate",
+      "appleTeamId": "YHX836X3WR"
     },
     "android": {
       "adaptiveIcon": {

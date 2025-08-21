@@ -1,9 +1,11 @@
+import { useBottomTabOverflow } from "@/components/ui/TabBarBackground";
 import { useAuth } from "@/contexts/AuthContext";
 import { firestore } from "@/utils/firebaseConfig";
 import * as Location from 'expo-location';
 import { collection, getDocs } from "firebase/firestore";
 import { useCallback, useEffect, useMemo, useState, type JSX } from "react";
 import { Button, Platform, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 type SkateSpot = {
   id: string;
@@ -20,6 +22,7 @@ export default function SkateMap() {
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const { user } = useAuth();
+  const bottom = useBottomTabOverflow();
 
   // const cameraPosition = useMemo(() => {
   //   if (userLocation) {
@@ -100,17 +103,30 @@ export default function SkateMap() {
   );
 
   const allMarkers = useMemo(
-    () => [...markersFromSpots, ...userMarker],
+    () => [...userMarker, ...markersFromSpots],
     [markersFromSpots, userMarker]
   );
 
-  const cameraPosition = useMemo(() => ({
-    coordinates: {
-      latitude: allMarkers[locationIndex].coordinates.latitude,
-      longitude: allMarkers[locationIndex].coordinates.longitude,
-    },
-    zoom: 18,
-  }), [allMarkers, locationIndex]);
+  const cameraPosition = useMemo(() => {
+    const marker = allMarkers[locationIndex] ?? allMarkers[0];
+    if (!marker) {
+      // fallback to a default location if no markers exist
+      return {
+        coordinates: {
+          latitude: 49.27235336018808,
+          longitude: -123.13455838338278,
+        },
+        zoom: 15,
+      };
+    }
+    return {
+      coordinates: {
+        latitude: marker.coordinates.latitude,
+        longitude: marker.coordinates.longitude,
+      },
+      zoom: 17,
+    };
+  }, [allMarkers, locationIndex]);
 
   const renderMapControls = useCallback(() => (
     <>
@@ -119,15 +135,17 @@ export default function SkateMap() {
       <View style={styles.controlsContainer} pointerEvents="auto">
         <Button
           title="Prev"
-          onPress={() => setLocationIndex(locationIndex - 1)}
+          onPress={() => setLocationIndex((i) => Math.max(0, i - 1))}
+          disabled={locationIndex <= 0}
         />
         <Button
           title="Next"
-          onPress={() => setLocationIndex(locationIndex - 1)}
+          onPress={() => setLocationIndex((i) => Math.min(allMarkers.length - 1, i + 1))}
+          disabled={locationIndex >= allMarkers.length - 1}
         />
       </View>
     </>
-  ), [locationIndex]);
+  ), [locationIndex, allMarkers.length]);
 
   // MAIN RETURN STATEMENT
   // We use the useEffect statement to make sure that if were using the app on web it doesn't crash on web
@@ -138,32 +156,46 @@ export default function SkateMap() {
       if (Platform.OS === "ios") { // IOS
         const { AppleMaps } = await import("expo-maps");
         if (isMounted)
-          setMapView(
-            <AppleMaps.View
-              style={{ flex: 1 }}
-              markers={allMarkers}
-              cameraPosition={cameraPosition}
-            />
+            setMapView(
+              <>
+                <AppleMaps.View
+                  style={StyleSheet.absoluteFill}
+                  markers={allMarkers}
+                  cameraPosition={cameraPosition}
+                />
+                <SafeAreaView
+                  style={{ flex: 1, paddingBottom: bottom }}
+                  pointerEvents="box-none" // this allows the user to use the object (map) behind the map controls
+                >
+                  {renderMapControls()}
+                </SafeAreaView>
+              </>
           );
-          {renderMapControls()}
       } else if (Platform.OS === "android") { // ANDROID
         const { GoogleMaps } = await import("expo-maps");
         if (isMounted)
           setMapView(
-            <GoogleMaps.View
-              style={{ flex: 1 }}
-              markers={allMarkers}
-              cameraPosition={cameraPosition}
-            />
+            <>
+              <GoogleMaps.View
+                style={{ flex: 1 }}
+                markers={allMarkers}
+                cameraPosition={cameraPosition}
+              />
+              <SafeAreaView
+                style={{ flex: 1, paddingBottom: bottom }}
+                pointerEvents="box-none" // this allows the user to use the object (map) behind the map controls
+              >
+                {renderMapControls()}
+              </SafeAreaView>
+            </>
           );
-          {renderMapControls()}
       }
     }
     loadMap();
     return () => {
       isMounted = false;
     };
-  }, [allMarkers, userLocation, cameraPosition, renderMapControls]);
+  }, [allMarkers, userLocation, cameraPosition, renderMapControls, bottom]);
 
   if (Platform.OS === "web") {
     return (
