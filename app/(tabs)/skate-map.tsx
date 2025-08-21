@@ -6,7 +6,7 @@ import { AppleMaps } from "expo-maps";
 import { AppleMapsMapType } from "expo-maps/build/apple/AppleMaps.types";
 import { collection, getDocs } from "firebase/firestore";
 import { useCallback, useEffect, useMemo, useRef, useState, type JSX } from "react";
-import { Button, Platform, StyleSheet, Text, View } from "react-native";
+import { Button, Modal, Platform, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 type SkateSpot = {
@@ -17,13 +17,18 @@ type SkateSpot = {
 };
 
 export default function SkateMap() {
+  const [loading, setLoading] = useState(true);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
   const ref = useRef<AppleMaps.MapView>(null);
   const [MapView, setMapView] = useState<JSX.Element | null>(null);
   const [userLocation, setUserLocation] = useState<Location.LocationObject | null>(null);
   const [locationIndex, setLocationIndex] = useState(0);
   const [spots, setSpots] = useState<SkateSpot[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [newSpotCords, setNewSpotCords] = useState<{ latitude: number; longitude: number } | null>(null);
+
   const { user } = useAuth();
   const bottom = useBottomTabOverflow();
 
@@ -191,6 +196,12 @@ export default function SkateMap() {
                       console.log(
                         JSON.stringify({ type: "onMapClick", data: e }, null, 2)
                       );
+
+                      const { latitude, longitude } = e.coordinates ?? e;
+                      if (typeof latitude === "number" && typeof longitude === "number") {
+                        setNewSpotCords({ latitude, longitude });
+                        setModalVisible(true);
+                      }
                     }}
                     onMarkerClick={(e) => {
                       console.log(
@@ -246,7 +257,39 @@ export default function SkateMap() {
     );
   }
 
-  return MapView ?? null;
+  // Move Modal here so it always reflects latest state
+  return (
+    <>
+      {MapView}
+      <Modal
+        visible={modalVisible}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "rgba(0,0,0,0.5)"
+        }}>
+          <View style={{
+            backgroundColor: "white",
+            padding: 24,
+            borderRadius: 12,
+            minWidth: 300,
+            alignItems: "center"
+          }}>
+            <Text style={{ fontWeight: "bold", fontSize: 18, marginBottom: 8 }}>Create Spot</Text>
+            <Text>Lat: {newSpotCords?.latitude ?? ""}</Text>
+            <Text>Lng: {newSpotCords?.longitude ?? ""}</Text>
+            {/* Add your form fields here */}
+            <Button title="Close" onPress={() => setModalVisible(false)} />
+          </View>
+        </View>
+      </Modal>
+    </>
+  );
 }
 
 const styles = StyleSheet.create({
