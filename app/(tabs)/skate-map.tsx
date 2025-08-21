@@ -184,7 +184,24 @@ export default function SkateMap() {
                   cameraPosition={cameraPosition}
                   properties={{
                     mapType: AppleMapsMapType.IMAGERY,
+                    selectionEnabled: false,
+                    isTrafficEnabled: false,
                   }}
+                   onMapClick={(e) => {
+                      console.log(
+                        JSON.stringify({ type: "onMapClick", data: e }, null, 2)
+                      );
+                    }}
+                    onMarkerClick={(e) => {
+                      console.log(
+                        JSON.stringify({ type: "onMarkerClick", data: e }, null, 2)
+                      );
+                    }}
+                    onCameraMove={(e) => {
+                      console.log(
+                        JSON.stringify({ type: "onCameraMove", data: e }, null, 2)
+                      );
+                    }}
                 />
                 <SafeAreaView
                   style={{ flex: 1, paddingBottom: bottom }}
