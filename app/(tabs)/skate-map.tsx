@@ -2,8 +2,10 @@ import { useBottomTabOverflow } from "@/components/ui/TabBarBackground";
 import { useAuth } from "@/contexts/AuthContext";
 import { firestore } from "@/utils/firebaseConfig";
 import * as Location from 'expo-location';
+import { AppleMaps } from "expo-maps";
+import { AppleMapsMapType } from "expo-maps/build/apple/AppleMaps.types";
 import { collection, getDocs } from "firebase/firestore";
-import { useCallback, useEffect, useMemo, useState, type JSX } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type JSX } from "react";
 import { Button, Platform, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -15,6 +17,7 @@ type SkateSpot = {
 };
 
 export default function SkateMap() {
+  const ref = useRef<AppleMaps.MapView>(null);
   const [MapView, setMapView] = useState<JSX.Element | null>(null);
   const [userLocation, setUserLocation] = useState<Location.LocationObject | null>(null);
   const [locationIndex, setLocationIndex] = useState(0);
@@ -128,6 +131,22 @@ export default function SkateMap() {
     };
   }, [allMarkers, locationIndex]);
 
+  const handleChangeWithRef = useCallback((direction: "next" | "prev") => {
+    const newIndex = locationIndex + (direction === "next" ? 1 : -1);
+    const nextLocation = allMarkers[newIndex] ?? allMarkers[0];
+
+    // Set camera position first to ensure animation happens
+    ref.current?.setCameraPosition({
+      coordinates: {
+        latitude: nextLocation.coordinates.latitude,
+        longitude: nextLocation.coordinates.longitude,
+      },
+      zoom: 17,
+    });
+
+    setLocationIndex(newIndex);
+  }, [locationIndex, allMarkers]);
+
   const renderMapControls = useCallback(() => (
     <>
       <View style={{ flex: 8 }} pointerEvents="none" />
@@ -135,17 +154,17 @@ export default function SkateMap() {
       <View style={styles.controlsContainer} pointerEvents="auto">
         <Button
           title="Prev"
-          onPress={() => setLocationIndex((i) => Math.max(0, i - 1))}
+          onPress={() => handleChangeWithRef("prev")}
           disabled={locationIndex <= 0}
         />
         <Button
           title="Next"
-          onPress={() => setLocationIndex((i) => Math.min(allMarkers.length - 1, i + 1))}
+          onPress={() => handleChangeWithRef("next")}
           disabled={locationIndex >= allMarkers.length - 1}
         />
       </View>
     </>
-  ), [locationIndex, allMarkers.length]);
+  ), [locationIndex, allMarkers.length, handleChangeWithRef]);
 
   // MAIN RETURN STATEMENT
   // We use the useEffect statement to make sure that if were using the app on web it doesn't crash on web
@@ -159,9 +178,13 @@ export default function SkateMap() {
             setMapView(
               <>
                 <AppleMaps.View
+                  ref={ref}
                   style={StyleSheet.absoluteFill}
                   markers={allMarkers}
                   cameraPosition={cameraPosition}
+                  properties={{
+                    mapType: AppleMapsMapType.IMAGERY,
+                  }}
                 />
                 <SafeAreaView
                   style={{ flex: 1, paddingBottom: bottom }}
@@ -177,6 +200,7 @@ export default function SkateMap() {
           setMapView(
             <>
               <GoogleMaps.View
+                ref={ref}
                 style={{ flex: 1 }}
                 markers={allMarkers}
                 cameraPosition={cameraPosition}
