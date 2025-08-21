@@ -10,7 +10,7 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.sloorjuice.iSkate"
+      "bundleIdentifier": "com.dirtyattic.iSkate"
     },
     "android": {
       "adaptiveIcon": {
@@ -21,7 +21,13 @@
       "permissions": [
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_FINE_LOCATION"
-      ]
+      ],
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyC8Hw9gWAghCe-bTwaedqvd_gFMWFeM0I0"
+        }
+      },
+      "package": "com.dirtyattic.iSkate"
     },
     "web": {
       "bundler": "metro",
@@ -44,13 +50,19 @@
         "expo-location",
         {
           "requestPermission": true,
-          "locationPermission": "Allow iSkate to use your location"
+          "locationPermission": "Allow iSkate to use your location to find nearby skate spots."
         }
       ],
       "expo-build-properties"
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "6329d388-61f6-4b77-ba00-35cf475ced86"
+      }
     }
   }
 }
