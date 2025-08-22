@@ -25,7 +25,6 @@ const styles = StyleSheet.create({
     textAlign: 'left',
   },
   iosText: {
-    marginLeft: -12,
-    marginTop: -8,
+    marginTop: -18,
   },
 });
