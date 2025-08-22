@@ -13,9 +13,17 @@ import { SafeAreaView } from "react-native-safe-area-context";
 type SkateSpot = {
   id: string;
   name: string;
+  description?: string;
+  difficulty?: string;
+  skatedBy?: string[];
   images?: string[];
+  spotTypes?: string[];
   latitude: number;
   longitude: number;
+  CreatedAt?: Date;
+  createdBy?: string;
+  rating?: number;
+  ratings?: number[];
 };
 
 export default function SkateMap() {
