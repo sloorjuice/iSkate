@@ -28,7 +28,13 @@
         <key>CFBundleURLSchemes</key>
         <array>
           <string>iskate</string>
-          <string>com.sloorjuice.iSkate</string>
+          <string>com.dirtyattic.iSkate</string>
+        </array>
+      </dict>
+      <dict>
+        <key>CFBundleURLSchemes</key>
+        <array>
+          <string>exp+iskate</string>
         </array>
       </dict>
     </array>
