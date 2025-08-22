@@ -1,13 +1,12 @@
-import { ThemedText } from "@/components/ThemedText";
+import { MapControls } from "@/components/MapControls";
 import { useBottomTabOverflow } from "@/components/ui/TabBarBackground";
 import { useAuth } from "@/contexts/AuthContext";
 import { firestore } from "@/utils/firebaseConfig";
 import * as Location from 'expo-location';
 import { AppleMaps } from "expo-maps";
-import { AppleMapsMapType } from "expo-maps/build/apple/AppleMaps.types";
 import { collection, getDocs } from "firebase/firestore";
 import { useCallback, useEffect, useMemo, useRef, useState, type JSX } from "react";
-import { Button, Modal, Platform, StyleSheet, Text, View } from "react-native";
+import { Button, Modal, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 type SkateSpot = {
@@ -17,7 +16,7 @@ type SkateSpot = {
   difficulty?: string;
   skatedBy?: string[];
   images?: string[];
-  spotTypes?: string[];
+  spotType?: string[];
   latitude: number;
   longitude: number;
   CreatedAt?: Date;
@@ -41,6 +40,7 @@ export default function SkateMap() {
   const [modalVisible, setModalVisible] = useState(false);
   const [newSpotCords, setNewSpotCords] = useState<{ latitude: number; longitude: number } | null>(null);
 
+  const [mapType, setMapType] = useState(AppleMaps.MapType.HYBRID);
   const { user } = useAuth();
   const bottom = useBottomTabOverflow();
 
@@ -107,6 +107,49 @@ export default function SkateMap() {
     [markersFromSpots, userMarker]
   );
 
+  // What the actual fuck. im dying and crying
+  function getDistance(lat1: number, lon1: number, lat2: number, lon2: number) {
+    const toRad = (x: number) => (x * Math.PI) / 180;
+    const R = 6371e3; // metres
+    const φ1 = toRad(lat1);
+    const φ2 = toRad(lat2);
+    const Δφ = toRad(lat2 - lat1);
+    const Δλ = toRad(lon2 - lon1);
+
+    const a =
+      Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+      Math.cos(φ1) * Math.cos(φ2) *
+      Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    return R * c;
+  }
+
+  useEffect(() => {
+    if (!selectedSpot && userLocation && spots.length > 0) {
+      let nearest = spots[0];
+      let minDist = getDistance(
+        userLocation.coords.latitude,
+        userLocation.coords.longitude,
+        nearest.latitude,
+        nearest.longitude
+      );
+      for (const spot of spots) {
+        const dist = getDistance(
+          userLocation.coords.latitude,
+          userLocation.coords.longitude,
+          spot.latitude,
+          spot.longitude
+        );
+        if (dist < minDist) {
+          minDist = dist;
+          nearest = spot;
+        }
+      }
+      setSelectedSpot(nearest);
+    }
+  }, [selectedSpot, userLocation, spots, allMarkers]);
+
   const cameraPosition = useMemo(() => {
     const marker = allMarkers[locationIndex] ?? allMarkers[0];
     if (!marker) {
@@ -142,35 +185,22 @@ export default function SkateMap() {
     });
 
     setLocationIndex(newIndex);
-  }, [locationIndex, allMarkers]);
 
-  const renderMapControls = useCallback(() => (
-    <>
-      <View style={{ flex: 8 }} pointerEvents="none" />
+    const spot = spots.find(
+    (s) =>
+      Math.abs(s.latitude - nextLocation.coordinates.latitude) < 1e-6 &&
+      Math.abs(s.longitude - nextLocation.coordinates.longitude) < 1e-6
+  );
+  setSelectedSpot(spot ?? null);
+  }, [locationIndex, allMarkers, spots]);
 
-      <View style={styles.controlsContainer} pointerEvents="auto">
-        <View style={styles.controlsInner}>
-          {selectedSpot && (
-            <ThemedText style={styles.selectedSpotText} type="subtitle">
-              {selectedSpot.name}
-            </ThemedText>
-          )}
-          <View style={styles.buttonRow}>
-            <Button
-              title="Prev"
-              onPress={() => handleChangeWithRef("prev")}
-              disabled={locationIndex <= 0}
-            />
-            <Button
-              title="Next"
-              onPress={() => handleChangeWithRef("next")}
-              disabled={locationIndex >= allMarkers.length - 1}
-            />
-          </View>
-        </View>
-      </View>
-    </>
-  ), [locationIndex, allMarkers.length, handleChangeWithRef, selectedSpot]);
+  const toggleMapType = () => {
+    setMapType((prev) =>
+      prev === AppleMaps.MapType.HYBRID
+        ? AppleMaps.MapType.IMAGERY
+        : AppleMaps.MapType.HYBRID
+    );
+  };
 
   // MAIN RETURN STATEMENT
   // We use the useEffect statement to make sure that if were using the app on web it doesn't crash on web
@@ -178,67 +208,98 @@ export default function SkateMap() {
   useEffect(() => {
     let isMounted = true;
     async function loadMap() {
-      if (Platform.OS === "ios") { // IOS
+      if (Platform.OS === "ios") {
         const { AppleMaps } = await import("expo-maps");
         if (isMounted)
-            setMapView(
-              <>
-                <AppleMaps.View
-                  ref={ref}
-                  style={StyleSheet.absoluteFill}
-                  markers={allMarkers}
-                  cameraPosition={cameraPosition}
-                  properties={{
-                    mapType: AppleMapsMapType.IMAGERY,
-                    selectionEnabled: false,
-                    isTrafficEnabled: false,
-                  }}
-                   onMapClick={(e) => {
-                      console.log(
-                        JSON.stringify({ type: "onMapClick", data: e }, null, 2)
-                      );
+          setMapView(
+            <>
+              {/* 3. Add the toggle button */}
+              <TouchableOpacity
+                style={{
+                  position: "absolute",
+                  top: 6, // Remove top padding
+                  left: 6,
+                  zIndex: 10,
+                  backgroundColor: "rgba(255,255,255,0.9)",
+                  padding: 8,
+                  borderRadius: 8,
+                }}
+                onPress={toggleMapType}
+              >
+                <Text style={{ fontWeight: "bold" }}>
+                  {mapType === AppleMaps.MapType.HYBRID ? "All Locations" : "SkateSpots"}
+                </Text>
+              </TouchableOpacity>
+              <AppleMaps.View
+                ref={ref}
+                style={StyleSheet.absoluteFill}
+                markers={allMarkers}
+                cameraPosition={cameraPosition}
+                properties={{
+                  mapType: mapType, // 4. Use the state here
+                  selectionEnabled: false,
+                  isTrafficEnabled: false,
+                }}
+                uiSettings={{
+                  togglePitchEnabled: true,
+                }}
+                onMapClick={(e) => {
+                  console.log(
+                    JSON.stringify({ type: "onMapClick", data: e }, null, 2)
+                  );
 
-                      // const { latitude, longitude } = e.coordinates ?? e;
-                      // if (typeof latitude === "number" && typeof longitude === "number") {
-                      //   setNewSpotCords({ latitude, longitude });
-                      //   setModalVisible(true);
-                      // }
-                    }}
-                    onMarkerClick={(e) => {
-                      console.log(
-                        JSON.stringify({ type: "onMarkerClick", data: e }, null, 2)
-                      );
-                      
-                      // e.coordinates contains the lat/lng of the tapped marker
-                      // Defensive: extract coordinates safely
-                      const coords = (e && 'coordinates' in e) ? (e as any).coordinates : e;
-                      const latitude = coords?.latitude;
-                      const longitude = coords?.longitude;
-                      // Find the spot with matching coordinates
-                      const spot = spots.find(
-                        (s) =>
-                          Math.abs(s.latitude - latitude) < 1e-6 &&
-                          Math.abs(s.longitude - longitude) < 1e-6
-                      );
-                      if (spot) {
-                        setSelectedSpot(spot);
-                        // Optionally open a modal or show spot details here
-                        // setModalVisible(true);
-                      }
-                    }}
-                    onCameraMove={(e) => {
-                      console.log(
-                        JSON.stringify({ type: "onCameraMove", data: e }, null, 2)
-                      );
-                    }}
+                    // const { latitude, longitude } = e.coordinates ?? e;
+                    // if (typeof latitude === "number" && typeof longitude === "number") {
+                    //   setNewSpotCords({ latitude, longitude });
+                    //   setModalVisible(true);
+                    // }
+                  }}
+                  onMarkerClick={(e) => {
+                    console.log(
+                      JSON.stringify({ type: "onMarkerClick", data: e }, null, 2)
+                    );
+                    
+                    // e.coordinates contains the lat/lng of the tapped marker
+                    // Defensive: extract coordinates safely
+                    const coords = (e && 'coordinates' in e) ? (e as any).coordinates : e;
+                    const latitude = coords?.latitude;
+                    const longitude = coords?.longitude;
+                    // Find the spot with matching coordinates
+                    const spot = spots.find(
+                      (s) =>
+                        Math.abs(s.latitude - latitude) < 1e-6 &&
+                        Math.abs(s.longitude - longitude) < 1e-6
+                    );
+                    if (spot) {
+                      setSelectedSpot(spot);
+                      // Optionally open a modal or show spot details here
+                      // setModalVisible(true);
+                    }
+                  }}
+                  onCameraMove={(e) => {
+                    console.log(
+                      JSON.stringify({ type: "onCameraMove", data: e }, null, 2)
+                    );
+                  }}
+              />
+              <SafeAreaView
+                style={{ flex: 1, paddingBottom: bottom }}
+                pointerEvents="box-none" // this allows the user to use the object (map) behind the map controls
+              >
+                <MapControls
+                  selectedSpot={selectedSpot}
+                  previewImage={selectedSpot?.images?.[0]}
+                  description={selectedSpot?.description}
+                  skatedBy={selectedSpot?.skatedBy}
+                  types={selectedSpot?.spotType}
+                  rating={selectedSpot?.rating}
+                  locationIndex={locationIndex}
+                  markersLength={allMarkers.length}
+                  onPrev={() => handleChangeWithRef("prev")}
+                  onNext={() => handleChangeWithRef("next")}
                 />
-                <SafeAreaView
-                  style={{ flex: 1, paddingBottom: bottom }}
-                  pointerEvents="box-none" // this allows the user to use the object (map) behind the map controls
-                >
-                  {renderMapControls()}
-                </SafeAreaView>
-              </>
+              </SafeAreaView>
+            </>
           );
       } else if (Platform.OS === "android") { // ANDROID
         const { GoogleMaps } = await import("expo-maps");
@@ -255,7 +316,13 @@ export default function SkateMap() {
                 style={{ flex: 1, paddingBottom: bottom }}
                 pointerEvents="box-none" // this allows the user to use the object (map) behind the map controls
               >
-                {renderMapControls()}
+                <MapControls
+                  selectedSpot={selectedSpot}
+                  locationIndex={locationIndex}
+                  markersLength={allMarkers.length}
+                  onPrev={() => handleChangeWithRef("prev")}
+                  onNext={() => handleChangeWithRef("next")}
+                />
               </SafeAreaView>
             </>
           );
@@ -265,7 +332,17 @@ export default function SkateMap() {
     return () => {
       isMounted = false;
     };
-  }, [allMarkers, userLocation, cameraPosition, renderMapControls, bottom, spots]);
+  }, [
+    allMarkers,
+    userLocation,
+    cameraPosition,
+    bottom,
+    spots,
+    selectedSpot,
+    handleChangeWithRef,
+    locationIndex,
+    mapType,
+  ]);
 
   if (Platform.OS === "web") {
     return (
