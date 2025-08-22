@@ -44,27 +44,6 @@ export default function SkateMap() {
   const { user } = useAuth();
   const bottom = useBottomTabOverflow();
 
-  // const cameraPosition = useMemo(() => {
-  //   if (userLocation) {
-  //     return {
-  //       coordinates: {
-  //         latitude: userLocation.coords.latitude,
-  //         longitude: userLocation.coords.longitude,
-  //       },
-  //       zoom: 15,
-  //     };
-  //   } else {
-  //     setErrorMsg("Unable to determine your location.");
-  //     return {
-  //       coordinates: {
-  //       latitude: 49.27235336018808,
-  //       longitude: -123.13455838338278,
-  //     },
-  //     zoom: 15,
-  //   };
-  //   }
-  // }, [userLocation]);
-
   useEffect(() => {
     async function fetchSpots() {
       const querySnapshot = await getDocs(collection(firestore, "skateSpots"));
@@ -78,6 +57,7 @@ export default function SkateMap() {
     fetchSpots();
   }, []);
 
+  // use this to convert the spots into markers
   const markersFromSpots = useMemo(
     () =>
       spots.map((spot) => ({
