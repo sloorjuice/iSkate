@@ -28,10 +28,12 @@ export function MapControls({
   rating,
   skatedBy // <-- Add skatedBy prop
 }: MapControlsProps) {
-  const cardBg = useThemeColor({}, "background");
+  const cardBg = useThemeColor({}, "card");
   const cardShadow = useThemeColor({}, "icon");
   const buttonBg = useThemeColor({}, "tint");
   const buttonText = useThemeColor({}, "background");
+  const nameColor = useThemeColor({}, "text");
+  const descriptionColor = useThemeColor({}, "description");
 
   console.log("selectedSpot", selectedSpot);
 
@@ -54,7 +56,7 @@ export function MapControls({
             {selectedSpot && (
               <>
                 <View style={styles.nameRow}>
-                  <ThemedText style={styles.selectedSpotText} type="subtitle">
+                  <ThemedText style={[styles.selectedSpotText, { color: nameColor }]} type="subtitle">
                     {selectedSpot.name.slice(0, 22)}{selectedSpot.name.length > 22 ? "..." : ""}
                   </ThemedText>
                   {typeof rating === "number" && (
@@ -66,7 +68,7 @@ export function MapControls({
                 {(description || Array.isArray(skatedBy)) && (
                   <View style={styles.descriptionRow}>
                     {description && (
-                      <ThemedText numberOfLines={2} style={styles.descriptionText}>
+                      <ThemedText numberOfLines={2} style={[styles.descriptionText, { color: descriptionColor }]}>
                         {description.slice(0, 28)}{description.length > 28 ? "..." : ""}
                       </ThemedText>
                     )}

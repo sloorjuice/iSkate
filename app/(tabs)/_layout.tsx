@@ -16,7 +16,7 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         headerStyle: {
-          backgroundColor: TabBarBackground,
+          backgroundColor: Colors[colorScheme ?? 'light'].card,
         },
         headerTintColor: Colors[colorScheme ?? 'light'].text,
         headerTitleAlign: 'left',

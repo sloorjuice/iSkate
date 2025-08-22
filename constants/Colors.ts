@@ -14,13 +14,17 @@ export const Colors = {
     icon: '#687076',
     tabIconDefault: '#687076',
     tabIconSelected: tintColorLight,
+    card: '#fff', // add for clarity
+    description: '#666', // add for clarity
   },
   dark: {
-    text: '#ECEDEE',
-    background: '#151718',
+    text: '#F4F6F8', // lighter text
+    background: '#23272A', // lighter than before
     tint: tintColorDark,
     icon: '#9BA1A6',
     tabIconDefault: '#9BA1A6',
     tabIconSelected: tintColorDark,
+    card: '#23272A', // lighter card bg
+    description: '#C2C7CC', // lighter description
   },
 };
