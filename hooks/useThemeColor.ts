@@ -5,6 +5,7 @@
 
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { useTintColor } from '@/hooks/useTintColor';
 
 export function useThemeColor(
   props: { light?: string; dark?: string },
@@ -12,10 +13,13 @@ export function useThemeColor(
 ) {
   const theme = useColorScheme() ?? 'light';
   const colorFromProps = props[theme];
+  const tintColor = useTintColor();
 
+  if (colorName === 'tint') {
+    return tintColor || Colors[theme].tint;
+  }
   if (colorFromProps) {
     return colorFromProps;
-  } else {
-    return Colors[theme][colorName];
   }
+  return Colors[theme][colorName];
 }

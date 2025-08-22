@@ -34,6 +34,8 @@ export function MapControls({
   const buttonText = useThemeColor({}, "background");
   const nameColor = useThemeColor({}, "text");
   const descriptionColor = useThemeColor({}, "description");
+  const typeBadgeBg = useThemeColor({}, "tint"); // Use tint as badge background
+  const typeBadgeText = useThemeColor({}, "background"); // Use background as badge text
 
   console.log("selectedSpot", selectedSpot);
 
@@ -82,7 +84,16 @@ export function MapControls({
                 {types && Array.isArray(types) && types.length > 0 && (
                   <View style={styles.typesRow}>
                     {types.slice(0, 2).map((type, idx) => (
-                      <ThemedText key={type} style={styles.typeBadge}>
+                      <ThemedText
+                        key={type}
+                        style={[
+                          styles.typeBadge,
+                          {
+                            backgroundColor: typeBadgeBg,
+                            color: typeBadgeText,
+                          },
+                        ]}
+                      >
                         {type}
                       </ThemedText>
                     ))}
