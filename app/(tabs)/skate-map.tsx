@@ -1,3 +1,4 @@
+import { ThemedText } from "@/components/ThemedText";
 import { useBottomTabOverflow } from "@/components/ui/TabBarBackground";
 import { useAuth } from "@/contexts/AuthContext";
 import { firestore } from "@/utils/firebaseConfig";
@@ -12,6 +13,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 type SkateSpot = {
   id: string;
   name: string;
+  images?: string[];
   latitude: number;
   longitude: number;
 };
@@ -25,6 +27,8 @@ export default function SkateMap() {
   const [userLocation, setUserLocation] = useState<Location.LocationObject | null>(null);
   const [locationIndex, setLocationIndex] = useState(0);
   const [spots, setSpots] = useState<SkateSpot[]>([]);
+
+  const [selectedSpot, setSelectedSpot] = useState<SkateSpot | null>(null);
 
   const [modalVisible, setModalVisible] = useState(false);
   const [newSpotCords, setNewSpotCords] = useState<{ latitude: number; longitude: number } | null>(null);
@@ -157,19 +161,28 @@ export default function SkateMap() {
       <View style={{ flex: 8 }} pointerEvents="none" />
 
       <View style={styles.controlsContainer} pointerEvents="auto">
-        <Button
-          title="Prev"
-          onPress={() => handleChangeWithRef("prev")}
-          disabled={locationIndex <= 0}
-        />
-        <Button
-          title="Next"
-          onPress={() => handleChangeWithRef("next")}
-          disabled={locationIndex >= allMarkers.length - 1}
-        />
+        <View style={styles.controlsInner}>
+          {selectedSpot && (
+            <ThemedText style={styles.selectedSpotText} type="subtitle">
+              {selectedSpot.name}
+            </ThemedText>
+          )}
+          <View style={styles.buttonRow}>
+            <Button
+              title="Prev"
+              onPress={() => handleChangeWithRef("prev")}
+              disabled={locationIndex <= 0}
+            />
+            <Button
+              title="Next"
+              onPress={() => handleChangeWithRef("next")}
+              disabled={locationIndex >= allMarkers.length - 1}
+            />
+          </View>
+        </View>
       </View>
     </>
-  ), [locationIndex, allMarkers.length, handleChangeWithRef]);
+  ), [locationIndex, allMarkers.length, handleChangeWithRef, selectedSpot]);
 
   // MAIN RETURN STATEMENT
   // We use the useEffect statement to make sure that if were using the app on web it doesn't crash on web
@@ -197,16 +210,33 @@ export default function SkateMap() {
                         JSON.stringify({ type: "onMapClick", data: e }, null, 2)
                       );
 
-                      const { latitude, longitude } = e.coordinates ?? e;
-                      if (typeof latitude === "number" && typeof longitude === "number") {
-                        setNewSpotCords({ latitude, longitude });
-                        setModalVisible(true);
-                      }
+                      // const { latitude, longitude } = e.coordinates ?? e;
+                      // if (typeof latitude === "number" && typeof longitude === "number") {
+                      //   setNewSpotCords({ latitude, longitude });
+                      //   setModalVisible(true);
+                      // }
                     }}
                     onMarkerClick={(e) => {
                       console.log(
                         JSON.stringify({ type: "onMarkerClick", data: e }, null, 2)
                       );
+                      
+                      // e.coordinates contains the lat/lng of the tapped marker
+                      // Defensive: extract coordinates safely
+                      const coords = (e && 'coordinates' in e) ? (e as any).coordinates : e;
+                      const latitude = coords?.latitude;
+                      const longitude = coords?.longitude;
+                      // Find the spot with matching coordinates
+                      const spot = spots.find(
+                        (s) =>
+                          Math.abs(s.latitude - latitude) < 1e-6 &&
+                          Math.abs(s.longitude - longitude) < 1e-6
+                      );
+                      if (spot) {
+                        setSelectedSpot(spot);
+                        // Optionally open a modal or show spot details here
+                        // setModalVisible(true);
+                      }
                     }}
                     onCameraMove={(e) => {
                       console.log(
@@ -247,7 +277,7 @@ export default function SkateMap() {
     return () => {
       isMounted = false;
     };
-  }, [allMarkers, userLocation, cameraPosition, renderMapControls, bottom]);
+  }, [allMarkers, userLocation, cameraPosition, renderMapControls, bottom, spots]);
 
   if (Platform.OS === "web") {
     return (
@@ -300,6 +330,25 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 8,
     backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  controlsInner: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
+  },
+  selectedSpotText: {
+    marginBottom: 8,
+    fontWeight: "bold",
+    fontSize: 18,
+    color: "#fff",
+    textAlign: "center",
+  },
+  buttonRow: {
+    flexDirection: "row",
+    gap: 8,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 
