@@ -4,7 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { firestore } from "@/utils/firebaseConfig";
 import * as Location from 'expo-location';
 import { AppleMaps } from "expo-maps";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import { useCallback, useEffect, useMemo, useRef, useState, type JSX } from "react";
 import { Button, Modal, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -48,9 +48,22 @@ export default function SkateMap() {
     async function fetchSpots() {
       const querySnapshot = await getDocs(collection(firestore, "skateSpots"));
       const spotsData: SkateSpot[] = [];
-      querySnapshot.forEach((doc) => {
-        spotsData.push({ id: doc.id, ...doc.data() } as SkateSpot);
-      });
+      for (const docSnap of querySnapshot.docs) {
+        const spot = { id: docSnap.id, ...docSnap.data() } as SkateSpot;
+        // Fetch creator's favoriteColor if available
+        if (spot.createdBy) {
+          try {
+            const userDoc = await getDoc(doc(firestore, "users", spot.createdBy));
+            const userData = userDoc.exists() ? userDoc.data() : {};
+            (spot as any).favoriteColor = userData.favoriteColor || "#FF4081"; // fallback color
+          } catch {
+            (spot as any).favoriteColor = "#FF4081";
+          }
+        } else {
+          (spot as any).favoriteColor = "#FF4081";
+        }
+        spotsData.push(spot);
+      }
       setSpots(spotsData);
       setLoading(false);
     }
@@ -63,7 +76,8 @@ export default function SkateMap() {
       spots.map((spot) => ({
         coordinates: { latitude: spot.latitude, longitude: spot.longitude },
         title: spot.name,
-        // Optionally add tintColor, systemImage, etc.
+        tintColor: (spot as any).favoriteColor, // Use favoriteColor
+        //systemImage: "star.fill", // or whatever icon you want
       })),
     [spots]
   );
