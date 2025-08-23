@@ -41,7 +41,6 @@ export function SpotListModal({
         flex: 1,
         justifyContent: "flex-end",
         alignItems: "center",
-        backgroundColor: "rgba(0,0,0,0.5)",
       }}>
         <View style={{
           backgroundColor: modalBackground, // <-- Use background color for modal background
