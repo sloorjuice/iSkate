@@ -31,6 +31,7 @@ export default function TabLayout() {
         tabBarActiveTintColor: tintColor,
         tabBarButton: HapticTab,
         tabBarBackground: TabBarBackground,
+        tabBarShowLabel: true,
         tabBarStyle: Platform.select({
           ios: {
             position: 'absolute',
@@ -42,7 +43,7 @@ export default function TabLayout() {
         name="skate-map"
         options={{
           title: 'Skate Map',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="location.fill" color={color} />,
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="map.fill"  color={color} />,
         }}
       />
       <Tabs.Screen
