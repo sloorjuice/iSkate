@@ -43,22 +43,24 @@ export function MapControls({
       <View style={{ flex: 8 }} pointerEvents="none" />
       <View style={styles.outerContainer} pointerEvents="auto">
         <View style={[styles.card, { backgroundColor: cardBg, shadowColor: cardShadow }]}>
-          <View style={styles.leftColumn}>
-            {previewImage && (
+          {previewImage && (
+            <View style={styles.leftColumn}>
               <Image
                 source={{ uri: previewImage }}
                 style={styles.previewImage}
                 contentFit="cover"
                 transition={300}
               />
-            )}
-          </View>
+            </View>
+          )}
           <View style={styles.rightColumn}>
             {selectedSpot && (
               <>
                 <View style={styles.nameRow}>
                   <ThemedText style={[styles.selectedSpotText, { color: nameColor }]} type="subtitle">
-                    {selectedSpot.name.slice(0, 22)}{selectedSpot.name.length > 22 ? "..." : ""}
+                    {selectedSpot?.name
+                      ? `${selectedSpot.name.slice(0, 22)}${selectedSpot.name.length > 22 ? "..." : ""}`
+                      : ""}
                   </ThemedText>
                   {typeof rating === "number" && (
                     <ThemedText style={styles.ratingText}>
@@ -101,6 +103,29 @@ export function MapControls({
                         +{types.length - 2}
                       </ThemedText>
                     )}
+                    {/* Distance next to types */}
+                    {selectedSpot &&
+                      typeof selectedSpot.latitude === "number" &&
+                      typeof selectedSpot.longitude === "number" &&
+                      selectedSpot.userLocation &&
+                      typeof selectedSpot.userLocation.coords?.latitude === "number" &&
+                      typeof selectedSpot.userLocation.coords?.longitude === "number" &&
+                      typeof selectedSpot.getDistance === "function" && (
+                        <ThemedText style={{ fontSize: 12, color: descriptionColor, marginLeft: 6 }}>
+                          {(selectedSpot.getDistance(
+                            selectedSpot.userLocation.coords.latitude,
+                            selectedSpot.userLocation.coords.longitude,
+                            selectedSpot.latitude,
+                            selectedSpot.longitude
+                          ) / 1000).toFixed(2)} km away
+                        </ThemedText>
+                    )}
+                    {/* Or, if you pass distance as a prop: */}
+                    {typeof selectedSpot.distance === "number" && (
+                      <ThemedText style={{ fontSize: 12, color: descriptionColor, marginLeft: 6 }}>
+                        {(selectedSpot.distance / 1000).toFixed(2)} km away
+                      </ThemedText>
+                    )}
                   </View>
                 )}
               </>
@@ -136,6 +161,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     padding: 16,
+    paddingTop: 28,
     width: "100%",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.12,

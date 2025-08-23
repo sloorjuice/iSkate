@@ -20,12 +20,12 @@ export const Colors = {
   },
   dark: {
     text: '#F4F6F8', // lighter text
-    background: '#1a1c1dff', // lighter than before
+    background: '#23272A', // lighter than before
     tint: tintColorDark,
-    icon: '#9BA1A6',
+    icon: '#121213ff',
     tabIconDefault: '#9BA1A6',
     tabIconSelected: tintColorDark,
-    card: '#23272A', // lighter card bg
+    card: '#1a1c1dff', // lighter card bg
     description: '#C2C7CC', // lighter description
   },
 };
