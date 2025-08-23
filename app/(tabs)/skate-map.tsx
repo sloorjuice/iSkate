@@ -1,6 +1,9 @@
 import { MapControls } from "@/components/MapControls";
+import { SpotListModal } from "@/components/SpotListModal";
+import { ThemedText } from "@/components/ThemedText";
 import { useBottomTabOverflow } from "@/components/ui/TabBarBackground";
 import { useAuth } from "@/contexts/AuthContext";
+import { useThemeColor } from "@/hooks/useThemeColor";
 import { firestore } from "@/utils/firebaseConfig";
 import * as Location from 'expo-location';
 import { AppleMaps } from "expo-maps";
@@ -9,7 +12,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, type JSX } from "rea
 import { Button, Modal, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-type SkateSpot = {
+export type SkateSpot = {
   id: string;
   name: string;
   description?: string;
@@ -40,9 +43,19 @@ export default function SkateMap() {
   const [modalVisible, setModalVisible] = useState(false);
   const [newSpotCords, setNewSpotCords] = useState<{ latitude: number; longitude: number } | null>(null);
 
+  const [listModalVisible, setListModalVisible] = useState(false);
+
   const [mapType, setMapType] = useState(AppleMaps.MapType.HYBRID);
   const { user } = useAuth();
   const bottom = useBottomTabOverflow();
+
+  // Theme colors
+  const modalBg = useThemeColor({}, "card");
+  const modalText = useThemeColor({}, "text");
+  const modalDesc = useThemeColor({}, "description");
+  const modalBorder = useThemeColor({}, "icon");
+  const mapTypeBtnBg = useThemeColor({}, "background");
+  const mapTypeBtnText = useThemeColor({}, "text");
 
   useEffect(() => {
     async function fetchSpots() {
@@ -70,16 +83,36 @@ export default function SkateMap() {
     fetchSpots();
   }, []);
 
+  // Memoize sorted spots by distance
+  const sortedSpots = useMemo(() => {
+    if (!userLocation) return spots;
+    return [...spots].sort(
+      (a, b) =>
+        getDistance(
+          userLocation.coords.latitude,
+          userLocation.coords.longitude,
+          a.latitude,
+          a.longitude
+        ) -
+        getDistance(
+          userLocation.coords.latitude,
+          userLocation.coords.longitude,
+          b.latitude,
+          b.longitude
+        )
+    );
+  }, [spots, userLocation]);
+
   // use this to convert the spots into markers
   const markersFromSpots = useMemo(
     () =>
-      spots.map((spot) => ({
+      sortedSpots.map((spot) => ({
         coordinates: { latitude: spot.latitude, longitude: spot.longitude },
         title: spot.name,
         tintColor: (spot as any).favoriteColor, // Use favoriteColor
         //systemImage: "star.fill", // or whatever icon you want
       })),
-    [spots]
+    [sortedSpots]
   );
 
   useEffect(() => {
@@ -216,6 +249,30 @@ export default function SkateMap() {
     );
   };
 
+    // Handler for selecting a spot from the list
+  const handleSelectSpot = useCallback(
+    (spot: SkateSpot) => {
+      setSelectedSpot(spot);
+      setListModalVisible(false);
+      // Find the marker index for camera movement
+      const idx = allMarkers.findIndex(
+        (m) =>
+          Math.abs(m.coordinates.latitude - spot.latitude) < 1e-6 &&
+          Math.abs(m.coordinates.longitude - spot.longitude) < 1e-6
+      );
+      setLocationIndex(idx >= 0 ? idx : 0);
+      // Move camera
+      ref.current?.setCameraPosition({
+        coordinates: {
+          latitude: spot.latitude,
+          longitude: spot.longitude,
+        },
+        zoom: 17,
+      });
+    },
+    [allMarkers]
+  );
+
   // MAIN RETURN STATEMENT
   // We use the useEffect statement to make sure that if were using the app on web it doesn't crash on web
   // unless you open the map screen
@@ -227,22 +284,24 @@ export default function SkateMap() {
         if (isMounted)
           setMapView(
             <>
-              {/* 3. Add the toggle button */}
+              {/* Map type toggle button with theme */}
               <TouchableOpacity
                 style={{
                   position: "absolute",
-                  top: 6, // Remove top padding
+                  top: 6,
                   left: 6,
                   zIndex: 10,
-                  backgroundColor: "rgba(255,255,255,0.9)",
+                  backgroundColor: mapTypeBtnBg,
                   padding: 8,
                   borderRadius: 8,
+                  borderWidth: 1,
+                  borderColor: modalBorder,
                 }}
                 onPress={toggleMapType}
               >
-                <Text style={{ fontWeight: "bold" }}>
+                <ThemedText style={{ fontWeight: "bold", color: mapTypeBtnText }}>
                   {mapType === AppleMaps.MapType.HYBRID ? "All Locations" : "SkateSpots"}
-                </Text>
+                </ThemedText>
               </TouchableOpacity>
               <AppleMaps.View
                 ref={ref}
@@ -250,7 +309,7 @@ export default function SkateMap() {
                 markers={allMarkers}
                 cameraPosition={cameraPosition}
                 properties={{
-                  mapType: mapType, // 4. Use the state here
+                  mapType: mapType,
                   selectionEnabled: false,
                   isTrafficEnabled: false,
                 }}
@@ -298,10 +357,15 @@ export default function SkateMap() {
               />
               <SafeAreaView
                 style={{ flex: 1, paddingBottom: bottom }}
-                pointerEvents="box-none" // this allows the user to use the object (map) behind the map controls
+                pointerEvents="box-none"
               >
                 <MapControls
-                  selectedSpot={selectedSpot}
+                  loading={loading || !selectedSpot}
+                  selectedSpot={{
+                    ...selectedSpot,
+                    userLocation,
+                    getDistance,
+                  }}
                   previewImage={selectedSpot?.images?.[0]}
                   description={selectedSpot?.description}
                   skatedBy={selectedSpot?.skatedBy}
@@ -309,8 +373,7 @@ export default function SkateMap() {
                   rating={selectedSpot?.rating}
                   locationIndex={locationIndex}
                   markersLength={allMarkers.length}
-                  onPrev={() => handleChangeWithRef("prev")}
-                  onNext={() => handleChangeWithRef("next")}
+                  onOpenList={() => setListModalVisible(true)}
                 />
               </SafeAreaView>
             </>
@@ -331,11 +394,20 @@ export default function SkateMap() {
                 pointerEvents="box-none" // this allows the user to use the object (map) behind the map controls
               >
                 <MapControls
-                  selectedSpot={selectedSpot}
+                  loading={loading || !selectedSpot}
+                  selectedSpot={{
+                    ...selectedSpot,
+                    userLocation,
+                    getDistance,
+                  }}
+                  previewImage={selectedSpot?.images?.[0]}
+                  description={selectedSpot?.description}
+                  skatedBy={selectedSpot?.skatedBy}
+                  types={selectedSpot?.spotType}
+                  rating={selectedSpot?.rating}
                   locationIndex={locationIndex}
                   markersLength={allMarkers.length}
-                  onPrev={() => handleChangeWithRef("prev")}
-                  onNext={() => handleChangeWithRef("next")}
+                  onOpenList={() => setListModalVisible(true)}
                 />
               </SafeAreaView>
             </>
@@ -356,6 +428,10 @@ export default function SkateMap() {
     handleChangeWithRef,
     locationIndex,
     mapType,
+    mapTypeBtnBg,
+    mapTypeBtnText,
+    modalBorder,
+    loading
   ]);
 
   if (Platform.OS === "web") {
@@ -370,6 +446,7 @@ export default function SkateMap() {
   return (
     <>
       {MapView}
+      {/* Create Spot Modal (unchanged) */}
       <Modal
         visible={modalVisible}
         transparent
@@ -383,87 +460,29 @@ export default function SkateMap() {
           backgroundColor: "rgba(0,0,0,0.5)"
         }}>
           <View style={{
-            backgroundColor: "white",
+            backgroundColor: modalBg,
             padding: 24,
             borderRadius: 12,
             minWidth: 300,
             alignItems: "center"
           }}>
-            <Text style={{ fontWeight: "bold", fontSize: 18, marginBottom: 8 }}>Create Spot</Text>
-            <Text>Lat: {newSpotCords?.latitude ?? ""}</Text>
-            <Text>Lng: {newSpotCords?.longitude ?? ""}</Text>
-            {/* Add your form fields here */}
+            <ThemedText style={{ fontWeight: "bold", fontSize: 18, marginBottom: 8, color: modalText }}>Create Spot</ThemedText>
+            <ThemedText style={{ color: modalText }}>Lat: {newSpotCords?.latitude ?? ""}</ThemedText>
+            <ThemedText style={{ color: modalText }}>Lng: {newSpotCords?.longitude ?? ""}</ThemedText>
             <Button title="Close" onPress={() => setModalVisible(false)} />
           </View>
         </View>
       </Modal>
+
+      {/* Spot List Modal */}
+      <SpotListModal
+        visible={listModalVisible}
+        onClose={() => setListModalVisible(false)}
+        spots={sortedSpots}
+        userLocation={userLocation}
+        getDistance={getDistance}
+        onSelectSpot={handleSelectSpot}
+      />
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  controlsContainer: {
-    flex: 1,
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    gap: 8,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-  controlsInner: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    width: "100%",
-  },
-  selectedSpotText: {
-    marginBottom: 8,
-    fontWeight: "bold",
-    fontSize: 18,
-    color: "#fff",
-    textAlign: "center",
-  },
-  buttonRow: {
-    flexDirection: "row",
-    gap: 8,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-});
-
-
-const markersApple = [
-  {
-    coordinates: { latitude: 49.259133, longitude: -123.10079 },
-    title: "49th Parallel Café & Lucky's Doughnuts - Main Street",
-    tintColor: "brown",
-    systemImage: "cup.and.saucer.fill",
-  },
-  {
-    coordinates: { latitude: 49.268034, longitude: -123.154819 },
-    title: "49th Parallel Café & Lucky's Doughnuts - 4th Ave",
-    tintColor: "brown",
-    systemImage: "cup.and.saucer.fill",
-  },
-  {
-    coordinates: { latitude: 49.286036, longitude: -123.12303 },
-    title: "49th Parallel Café & Lucky's Doughnuts - Thurlow",
-    tintColor: "brown",
-    systemImage: "cup.and.saucer.fill",
-  },
-  {
-    coordinates: { latitude: 49.311879, longitude: -123.079241 },
-    title: "49th Parallel Café & Lucky's Doughnuts - Lonsdale",
-    tintColor: "brown",
-    systemImage: "cup.and.saucer.fill",
-  },
-  {
-    coordinates: {
-      latitude: 49.27235336018808,
-      longitude: -123.13455838338278,
-    },
-    title: "A La Mode Pie Café - Granville Island",
-    tintColor: "orange",
-    systemImage: "fork.knife",
-  },
-];
