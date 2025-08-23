@@ -1,5 +1,6 @@
 import { ThemedText } from "@/components/ThemedText";
 import { useThemeColor } from "@/hooks/useThemeColor";
+import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { Pressable, StyleSheet, View } from "react-native";
 
@@ -10,8 +11,7 @@ type MapControlsProps = {
   types?: string[];
   locationIndex: number;
   markersLength: number;
-  onPrev: () => void;
-  onNext: () => void;
+  onOpenList: () => void;
   rating?: number;
   skatedBy?: any[]; // <-- Add skatedBy prop
 };
@@ -20,8 +20,7 @@ export function MapControls({
   selectedSpot,
   locationIndex,
   markersLength,
-  onPrev,
-  onNext,
+  onOpenList,
   previewImage,
   description,
   types,
@@ -110,23 +109,12 @@ export function MapControls({
           <View style={styles.buttonStack}>
             <Pressable
               style={({ pressed }) => [
-                styles.smallButton,
-                { backgroundColor: buttonBg, opacity: pressed || locationIndex <= 0 ? 0.6 : 1 },
+                styles.menuButton,
+                { backgroundColor: buttonBg, opacity: pressed ? 0.7 : 1 },
               ]}
-              onPress={onPrev}
-              disabled={locationIndex <= 0}
+              onPress={onOpenList}
             >
-              <ThemedText style={[styles.buttonText, { color: buttonText }]}>Prev</ThemedText>
-            </Pressable>
-            <Pressable
-              style={({ pressed }) => [
-                styles.smallButton,
-                { backgroundColor: buttonBg, opacity: pressed || locationIndex >= markersLength - 1 ? 0.6 : 1 },
-              ]}
-              onPress={onNext}
-              disabled={locationIndex >= markersLength - 1}
-            >
-              <ThemedText style={[styles.buttonText, { color: buttonText }]}>Next</ThemedText>
+              <Ionicons name="menu" size={24} color={buttonText} />
             </Pressable>
           </View>
         </View>
@@ -237,6 +225,14 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
     gap: 10,
     marginLeft: 8,
+  },
+  menuButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 8,
+    minWidth: 48,
+    alignItems: "center",
+    justifyContent: "center",
   },
   smallButton: {
     paddingHorizontal: 16,
