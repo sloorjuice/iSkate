@@ -1,4 +1,5 @@
 import { MapControls } from "@/components/MapControls";
+import { SpotListModal } from "@/components/SpotListModal";
 import { ThemedText } from "@/components/ThemedText";
 import { useBottomTabOverflow } from "@/components/ui/TabBarBackground";
 import { useAuth } from "@/contexts/AuthContext";
@@ -8,10 +9,10 @@ import * as Location from 'expo-location';
 import { AppleMaps } from "expo-maps";
 import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import { useCallback, useEffect, useMemo, useRef, useState, type JSX } from "react";
-import { Button, FlatList, Modal, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Button, Modal, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-type SkateSpot = {
+export type SkateSpot = {
   id: string;
   name: string;
   description?: string;
@@ -359,7 +360,11 @@ export default function SkateMap() {
                 pointerEvents="box-none" // this allows the user to use the object (map) behind the map controls
               >
                 <MapControls
-                  selectedSpot={selectedSpot}
+                  selectedSpot={{
+                    ...selectedSpot,
+                    userLocation,
+                    getDistance,
+                  }}
                   previewImage={selectedSpot?.images?.[0]}
                   description={selectedSpot?.description}
                   skatedBy={selectedSpot?.skatedBy}
@@ -388,7 +393,11 @@ export default function SkateMap() {
                 pointerEvents="box-none" // this allows the user to use the object (map) behind the map controls
               >
                 <MapControls
-                  selectedSpot={selectedSpot}
+                  selectedSpot={{
+                    ...selectedSpot,
+                    userLocation,
+                    getDistance,
+                  }}
                   locationIndex={locationIndex}
                   markersLength={allMarkers.length}
                   onOpenList={() => setListModalVisible(true)}
@@ -429,7 +438,7 @@ export default function SkateMap() {
   return (
     <>
       {MapView}
-      {/* Create Spot Modal (unchanged, but you can theme it similarly if needed) */}
+      {/* Create Spot Modal (unchanged) */}
       <Modal
         visible={modalVisible}
         transparent
@@ -457,67 +466,15 @@ export default function SkateMap() {
         </View>
       </Modal>
 
-      {/* Spot List Modal with theme */}
-      <Modal
+      {/* Spot List Modal */}
+      <SpotListModal
         visible={listModalVisible}
-        transparent
-        animationType="slide"
-        onRequestClose={() => setListModalVisible(false)}
-      >
-        <View style={{
-          flex: 1,
-          backgroundColor: "rgba(0,0,0,0.5)",
-          justifyContent: "center",
-          alignItems: "center"
-        }}>
-          <View style={{
-            backgroundColor: modalBg,
-            borderRadius: 12,
-            maxHeight: "80%",
-            width: "90%",
-            padding: 16,
-            borderWidth: 1,
-            borderColor: modalBorder,
-          }}>
-            <ThemedText style={{ fontWeight: "bold", fontSize: 18, marginBottom: 12, color: modalText }}>
-              Spots by Distance
-            </ThemedText>
-            <FlatList
-              data={sortedSpots}
-              keyExtractor={(item) => item.id}
-              initialNumToRender={20}
-              maxToRenderPerBatch={30}
-              windowSize={21}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  style={{
-                    paddingVertical: 10,
-                    borderBottomWidth: 1,
-                    borderBottomColor: modalBorder,
-                  }}
-                  onPress={() => handleSelectSpot(item)}
-                >
-                  <ThemedText style={{ fontWeight: "bold", color: modalText }}>{item.name}</ThemedText>
-                  <ThemedText style={{ color: modalDesc }}>
-                    {item.description?.slice(0, 40) ?? ""}
-                  </ThemedText>
-                  {userLocation && (
-                    <ThemedText style={{ color: modalDesc, fontSize: 12 }}>
-                      {(getDistance(
-                        userLocation.coords.latitude,
-                        userLocation.coords.longitude,
-                        item.latitude,
-                        item.longitude
-                      ) / 1000).toFixed(2)} km away
-                    </ThemedText>
-                  )}
-                </TouchableOpacity>
-              )}
-            />
-            <Button title="Close" onPress={() => setListModalVisible(false)} />
-          </View>
-        </View>
-      </Modal>
+        onClose={() => setListModalVisible(false)}
+        spots={sortedSpots}
+        userLocation={userLocation}
+        getDistance={getDistance}
+        onSelectSpot={handleSelectSpot}
+      />
     </>
   );
 }
