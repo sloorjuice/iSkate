@@ -5,6 +5,7 @@ import { Image } from "expo-image";
 import { Pressable, StyleSheet, View } from "react-native";
 
 type MapControlsProps = {
+  loading?: boolean; // <-- add this
   selectedSpot: any;
   previewImage?: string;
   description?: string;
@@ -13,10 +14,11 @@ type MapControlsProps = {
   markersLength: number;
   onOpenList: () => void;
   rating?: number;
-  skatedBy?: any[]; // <-- Add skatedBy prop
+  skatedBy?: any[];
 };
 
 export function MapControls({
+  loading,
   selectedSpot,
   locationIndex,
   markersLength,
@@ -25,7 +27,7 @@ export function MapControls({
   description,
   types,
   rating,
-  skatedBy // <-- Add skatedBy prop
+  skatedBy
 }: MapControlsProps) {
   const cardBg = useThemeColor({}, "card");
   const cardShadow = useThemeColor({}, "icon");
@@ -35,15 +37,13 @@ export function MapControls({
   const descriptionColor = useThemeColor({}, "description");
   const typeBadgeBg = useThemeColor({}, "tint"); // Use tint as badge background
   const typeBadgeText = useThemeColor({}, "background"); // Use background as badge text
-
-  console.log("selectedSpot", selectedSpot);
-
+  
   return (
     <>
       <View style={{ flex: 8 }} pointerEvents="none" />
       <View style={styles.outerContainer} pointerEvents="auto">
         <View style={[styles.card, { backgroundColor: cardBg, shadowColor: cardShadow }]}>
-          {previewImage && (
+          {previewImage && !loading && (
             <View style={styles.leftColumn}>
               <Image
                 source={{ uri: previewImage }}
@@ -58,17 +58,19 @@ export function MapControls({
               <>
                 <View style={styles.nameRow}>
                   <ThemedText style={[styles.selectedSpotText, { color: nameColor }]} type="subtitle">
-                    {selectedSpot?.name
-                      ? `${selectedSpot.name.slice(0, 22)}${selectedSpot.name.length > 22 ? "..." : ""}`
-                      : ""}
+                    {loading ? "Loading nearest spot..." : (
+                      selectedSpot?.name
+                        ? `${selectedSpot.name.slice(0, 22)}${selectedSpot.name.length > 22 ? "..." : ""}`
+                        : ""
+                    )}
                   </ThemedText>
-                  {typeof rating === "number" && (
+                  {!loading && typeof rating === "number" && (
                     <ThemedText style={styles.ratingText}>
                       ⭐ {rating.toFixed(1)}
                     </ThemedText>
                   )}
                 </View>
-                {(description || Array.isArray(skatedBy)) && (
+                {!loading && (description || Array.isArray(skatedBy)) && (
                   <View style={styles.descriptionRow}>
                     {description && (
                       <ThemedText numberOfLines={2} style={[styles.descriptionText, { color: descriptionColor }]}>
@@ -82,7 +84,7 @@ export function MapControls({
                     )}
                   </View>
                 )}
-                {types && Array.isArray(types) && types.length > 0 && (
+                {!loading && types && Array.isArray(types) && types.length > 0 && (
                   <View style={styles.typesRow}>
                     {types.slice(0, 2).map((type, idx) => (
                       <ThemedText
@@ -132,15 +134,17 @@ export function MapControls({
             )}
           </View>
           <View style={styles.buttonStack}>
-            <Pressable
-              style={({ pressed }) => [
-                styles.menuButton,
-                { backgroundColor: buttonBg, opacity: pressed ? 0.7 : 1 },
-              ]}
-              onPress={onOpenList}
-            >
-              <Ionicons name="menu" size={24} color={buttonText} />
-            </Pressable>
+            {!loading && (
+              <Pressable
+                style={({ pressed }) => [
+                  styles.menuButton,
+                  { backgroundColor: buttonBg, opacity: pressed ? 0.7 : 1 },
+                ]}
+                onPress={onOpenList}
+              >
+                <Ionicons name="menu" size={24} color={buttonText} />
+              </Pressable>
+            )}
           </View>
         </View>
       </View>

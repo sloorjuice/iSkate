@@ -357,9 +357,10 @@ export default function SkateMap() {
               />
               <SafeAreaView
                 style={{ flex: 1, paddingBottom: bottom }}
-                pointerEvents="box-none" // this allows the user to use the object (map) behind the map controls
+                pointerEvents="box-none"
               >
                 <MapControls
+                  loading={loading || !selectedSpot}
                   selectedSpot={{
                     ...selectedSpot,
                     userLocation,
@@ -393,11 +394,17 @@ export default function SkateMap() {
                 pointerEvents="box-none" // this allows the user to use the object (map) behind the map controls
               >
                 <MapControls
+                  loading={loading || !selectedSpot}
                   selectedSpot={{
                     ...selectedSpot,
                     userLocation,
                     getDistance,
                   }}
+                  previewImage={selectedSpot?.images?.[0]}
+                  description={selectedSpot?.description}
+                  skatedBy={selectedSpot?.skatedBy}
+                  types={selectedSpot?.spotType}
+                  rating={selectedSpot?.rating}
                   locationIndex={locationIndex}
                   markersLength={allMarkers.length}
                   onOpenList={() => setListModalVisible(true)}
@@ -424,6 +431,7 @@ export default function SkateMap() {
     mapTypeBtnBg,
     mapTypeBtnText,
     modalBorder,
+    loading
   ]);
 
   if (Platform.OS === "web") {
