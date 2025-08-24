@@ -114,12 +114,14 @@ export function MapControls({
                       typeof selectedSpot.userLocation.coords?.longitude === "number" &&
                       typeof selectedSpot.getDistance === "function" && (
                         <ThemedText style={{ fontSize: 12, color: descriptionColor, marginLeft: 6 }}>
-                          {(selectedSpot.getDistance(
-                            selectedSpot.userLocation.coords.latitude,
-                            selectedSpot.userLocation.coords.longitude,
-                            selectedSpot.latitude,
-                            selectedSpot.longitude
-                          ) / 1000).toFixed(2)} km away
+                          {(
+                            selectedSpot.getDistance(
+                              selectedSpot.userLocation.coords.latitude,
+                              selectedSpot.userLocation.coords.longitude,
+                              selectedSpot.latitude,
+                              selectedSpot.longitude
+                            ) / 1609.34
+                          ).toFixed(2)} miles away
                         </ThemedText>
                     )}
                     {/* Or, if you pass distance as a prop: */}

@@ -57,6 +57,8 @@ export default function SkateMap() {
   const mapTypeBtnBg = useThemeColor({}, "background");
   const mapTypeBtnText = useThemeColor({}, "text");
 
+  const [searchRadiusMiles, setSearchRadiusMiles] = useState(25); // <-- Add this
+
   useEffect(() => {
     async function fetchSpots() {
       const querySnapshot = await getDocs(collection(firestore, "skateSpots"));
@@ -83,10 +85,22 @@ export default function SkateMap() {
     fetchSpots();
   }, []);
 
-  // Memoize sorted spots by distance
+  // Memoize sorted and filtered spots by distance
   const sortedSpots = useMemo(() => {
     if (!userLocation) return spots;
-    return [...spots].sort(
+    const radiusMeters = searchRadiusMiles * 1609.34; // 1 mile = 1609.34 meters
+    // Filter by distance
+    const filtered = spots.filter(
+      (spot) =>
+        getDistance(
+          userLocation.coords.latitude,
+          userLocation.coords.longitude,
+          spot.latitude,
+          spot.longitude
+        ) <= radiusMeters
+    );
+    // Sort by distance
+    return filtered.sort(
       (a, b) =>
         getDistance(
           userLocation.coords.latitude,
@@ -101,7 +115,7 @@ export default function SkateMap() {
           b.longitude
         )
     );
-  }, [spots, userLocation]);
+  }, [spots, userLocation, searchRadiusMiles]);
 
   // use this to convert the spots into markers
   const markersFromSpots = useMemo(
