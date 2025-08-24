@@ -1,0 +1,656 @@
+[
+  {
+    "id": "ollie",
+    "name": "Ollie",
+    "difficulty": "Beginner",
+    "category": "Street"
+  },
+  {
+    "id": "shuvit",
+    "name": "Shuvit",
+    "difficulty": "Beginner",
+    "category": "Street"
+  },
+  {
+    "id": "pop_shuvit",
+    "name": "Pop Shuvit",
+    "difficulty": "Beginner",
+    "category": "Street"
+  },
+  {
+    "id": "frontside_180",
+    "name": "Frontside 180",
+    "difficulty": "Beginner",
+    "category": "Street"
+  },
+  {
+    "id": "backside_180",
+    "name": "Backside 180",
+    "difficulty": "Beginner",
+    "category": "Street"
+  },
+  {
+    "id": "manual",
+    "name": "Manual",
+    "difficulty": "Beginner",
+    "category": "Balance"
+  },
+  {
+    "id": "pivot",
+    "name": "Pivot",
+    "difficulty": "Beginner",
+    "category": "Balance"
+  },
+  {
+    "id": "tic_tac",
+    "name": "Tic Tac",
+    "difficulty": "Beginner",
+    "category": "Street"
+  },
+  {
+    "id": "caveman",
+    "name": "Caveman",
+    "difficulty": "Beginner",
+    "category": "Street"
+  },
+  {
+    "id": "acid_drop",
+    "name": "Acid Drop",
+    "difficulty": "Beginner",
+    "category": "Street"
+  },
+  {
+    "id": "boneless",
+    "name": "Boneless",
+    "difficulty": "Beginner",
+    "category": "Street"
+  },
+  {
+    "id": "no_comply",
+    "name": "No Comply",
+    "difficulty": "Beginner",
+    "category": "Street"
+  },
+  {
+    "id": "hippie_jump",
+    "name": "Hippie Jump",
+    "difficulty": "Beginner",
+    "category": "Balance"
+  },
+  {
+    "id": "revert",
+    "name": "Revert",
+    "difficulty": "Beginner",
+    "category": "Street"
+  },
+  {
+    "id": "powerslide",
+    "name": "Powerslide",
+    "difficulty": "Beginner",
+    "category": "Street"
+  },
+  {
+    "id": "early_grab",
+    "name": "Early Grab",
+    "difficulty": "Beginner",
+    "category": "Street"
+  },
+  {
+    "id": "step_off",
+    "name": "Step Off",
+    "difficulty": "Beginner",
+    "category": "Street"
+  },
+  {
+    "id": "firecracker",
+    "name": "Firecracker",
+    "difficulty": "Beginner",
+    "category": "Street"
+  },
+  {
+    "id": "kickturn",
+    "name": "Kickturn",
+    "difficulty": "Beginner",
+    "category": "Balance"
+  },
+  {
+    "id": "nollie",
+    "name": "Nollie",
+    "difficulty": "Intermediate",
+    "category": "Street"
+  },
+  {
+    "id": "kickflip",
+    "name": "Kickflip",
+    "difficulty": "Intermediate",
+    "category": "Flip Trick"
+  },
+  {
+    "id": "heelflip",
+    "name": "Heelflip",
+    "difficulty": "Intermediate",
+    "category": "Flip Trick"
+  },
+  {
+    "id": "varial_kickflip",
+    "name": "Varial Kickflip",
+    "difficulty": "Intermediate",
+    "category": "Flip Trick"
+  },
+  {
+    "id": "boardslide",
+    "name": "Boardslide",
+    "difficulty": "Intermediate",
+    "category": "Grind"
+  },
+  {
+    "id": "nose_slide",
+    "name": "Nose Slide",
+    "difficulty": "Intermediate",
+    "category": "Grind"
+  },
+  {
+    "id": "tail_slide",
+    "name": "Tail Slide",
+    "difficulty": "Intermediate",
+    "category": "Grind"
+  },
+  {
+    "id": "nose_manual",
+    "name": "Nose Manual",
+    "difficulty": "Intermediate",
+    "category": "Balance"
+  },
+  {
+    "id": "crooked_grind",
+    "name": "Crooked Grind",
+    "difficulty": "Intermediate",
+    "category": "Grind"
+  },
+  {
+    "id": "tre_flip",
+    "name": "Tre Flip",
+    "difficulty": "Advanced",
+    "category": "Flip Trick"
+  },
+  {
+    "id": "hardflip",
+    "name": "Hardflip",
+    "difficulty": "Advanced",
+    "category": "Flip Trick"
+  },
+  {
+    "id": "smith_grind",
+    "name": "Smith Grind",
+    "difficulty": "Advanced",
+    "category": "Grind"
+  },
+  {
+    "id": "feeble_grind",
+    "name": "Feeble Grind",
+    "difficulty": "Advanced",
+    "category": "Grind"
+  },
+  {
+    "id": "blunt_slide",
+    "name": "Blunt Slide",
+    "difficulty": "Advanced",
+    "category": "Grind"
+  },
+  {
+    "id": "bigspin",
+    "name": "Bigspin",
+    "difficulty": "Advanced",
+    "category": "Flip Trick"
+  },
+  {
+    "id": "fakie_bigspin",
+    "name": "Fakie Bigspin",
+    "difficulty": "Advanced",
+    "category": "Flip Trick"
+  },
+  {
+    "id": "inward_heelflip",
+    "name": "Inward Heelflip",
+    "difficulty": "Advanced",
+    "category": "Flip Trick"
+  },
+  {
+    "id": "double_kickflip",
+    "name": "Double Kickflip",
+    "difficulty": "Advanced",
+    "category": "Flip Trick"
+  },
+  {
+    "id": "360_flip",
+    "name": "360 Flip",
+    "difficulty": "Advanced",
+    "category": "Flip Trick"
+  },
+  {
+    "id": "pressure_flip",
+    "name": "Pressure Flip",
+    "difficulty": "Advanced",
+    "category": "Flip Trick"
+  },
+  {
+    "id": "laser_flip",
+    "name": "Laser Flip",
+    "difficulty": "Expert",
+    "category": "Flip Trick"
+  },
+  {
+    "id": "casper_flip",
+    "name": "Casper Flip",
+    "difficulty": "Expert",
+    "category": "Flip Trick"
+  },
+  {
+    "id": "switch_kickflip",
+    "name": "Switch Kickflip",
+    "difficulty": "Expert",
+    "category": "Flip Trick"
+  },
+  {
+    "id": "darkslide",
+    "name": "Darkslide",
+    "difficulty": "Expert",
+    "category": "Grind"
+  },
+  {
+    "id": "switch_ollie",
+    "name": "Switch Ollie",
+    "difficulty": "Intermediate",
+    "category": "Street"
+  },
+  {
+    "id": "fakie_ollie",
+    "name": "Fakie Ollie",
+    "difficulty": "Intermediate",
+    "category": "Street"
+  },
+  {
+    "id": "nollie_shuvit",
+    "name": "Nollie Shuvit",
+    "difficulty": "Intermediate",
+    "category": "Street"
+  },
+  {
+    "id": "fakie_kickflip",
+    "name": "Fakie Kickflip",
+    "difficulty": "Advanced",
+    "category": "Flip Trick"
+  },
+  {
+    "id": "nollie_kickflip",
+    "name": "Nollie Kickflip",
+    "difficulty": "Advanced",
+    "category": "Flip Trick"
+  },
+  {
+    "id": "switch_heelflip",
+    "name": "Switch Heelflip",
+    "difficulty": "Expert",
+    "category": "Flip Trick"
+  },
+  {
+    "id": "fakie_heelflip",
+    "name": "Fakie Heelflip",
+    "difficulty": "Advanced",
+    "category": "Flip Trick"
+  },
+  {
+    "id": "nollie_heelflip",
+    "name": "Nollie Heelflip",
+    "difficulty": "Advanced",
+    "category": "Flip Trick"
+  },
+  {
+    "id": "frontside_kickflip",
+    "name": "Frontside Kickflip",
+    "difficulty": "Advanced",
+    "category": "Flip Trick"
+  },
+  {
+    "id": "backside_kickflip",
+    "name": "Backside Kickflip",
+    "difficulty": "Advanced",
+    "category": "Flip Trick"
+  },
+  {
+    "id": "frontside_heelflip",
+    "name": "Frontside Heelflip",
+    "difficulty": "Advanced",
+    "category": "Flip Trick"
+  },
+  {
+    "id": "backside_heelflip",
+    "name": "Backside Heelflip",
+    "difficulty": "Advanced",
+    "category": "Flip Trick"
+  },
+  {
+    "id": "switch_varial_kickflip",
+    "name": "Switch Varial Kickflip",
+    "difficulty": "Expert",
+    "category": "Flip Trick"
+  },
+  {
+    "id": "fakie_varial_kickflip",
+    "name": "Fakie Varial Kickflip",
+    "difficulty": "Advanced",
+    "category": "Flip Trick"
+  },
+  {
+    "id": "nollie_varial_kickflip",
+    "name": "Nollie Varial Kickflip",
+    "difficulty": "Advanced",
+    "category": "Flip Trick"
+  },
+  {
+    "id": "frontside_360",
+    "name": "Frontside 360",
+    "difficulty": "Advanced",
+    "category": "Street"
+  },
+  {
+    "id": "backside_360",
+    "name": "Backside 360",
+    "difficulty": "Advanced",
+    "category": "Street"
+  },
+  {
+    "id": "switch_bigspin",
+    "name": "Switch Bigspin",
+    "difficulty": "Expert",
+    "category": "Flip Trick"
+  },
+  {
+    "id": "nollie_bigspin",
+    "name": "Nollie Bigspin",
+    "difficulty": "Advanced",
+    "category": "Flip Trick"
+  },
+  {
+    "id": "frontside_boardslide",
+    "name": "Frontside Boardslide",
+    "difficulty": "Intermediate",
+    "category": "Grind"
+  },
+  {
+    "id": "backside_boardslide",
+    "name": "Backside Boardslide",
+    "difficulty": "Intermediate",
+    "category": "Grind"
+  },
+  {
+    "id": "frontside_nose_slide",
+    "name": "Frontside Nose Slide",
+    "difficulty": "Intermediate",
+    "category": "Grind"
+  },
+  {
+    "id": "backside_nose_slide",
+    "name": "Backside Nose Slide",
+    "difficulty": "Intermediate",
+    "category": "Grind"
+  },
+  {
+    "id": "frontside_tail_slide",
+    "name": "Frontside Tail Slide",
+    "difficulty": "Intermediate",
+    "category": "Grind"
+  },
+  {
+    "id": "backside_tail_slide",
+    "name": "Backside Tail Slide",
+    "difficulty": "Intermediate",
+    "category": "Grind"
+  },
+  {
+    "id": "switch_nose_manual",
+    "name": "Switch Nose Manual",
+    "difficulty": "Advanced",
+    "category": "Balance"
+  },
+  {
+    "id": "fakie_nose_manual",
+    "name": "Fakie Nose Manual",
+    "difficulty": "Advanced",
+    "category": "Balance"
+  },
+  {
+    "id": "nollie_nose_manual",
+    "name": "Nollie Nose Manual",
+    "difficulty": "Advanced",
+    "category": "Balance"
+  },
+  {
+    "id": "frontside_crooked_grind",
+    "name": "Frontside Crooked Grind",
+    "difficulty": "Advanced",
+    "category": "Grind"
+  },
+  {
+    "id": "backside_crooked_grind",
+    "name": "Backside Crooked Grind",
+    "difficulty": "Advanced",
+    "category": "Grind"
+  },
+  {
+    "id": "frontside_smith_grind",
+    "name": "Frontside Smith Grind",
+    "difficulty": "Expert",
+    "category": "Grind"
+  },
+  {
+    "id": "backside_smith_grind",
+    "name": "Backside Smith Grind",
+    "difficulty": "Expert",
+    "category": "Grind"
+  },
+  {
+    "id": "frontside_feeble_grind",
+    "name": "Frontside Feeble Grind",
+    "difficulty": "Expert",
+    "category": "Grind"
+  },
+  {
+    "id": "backside_feeble_grind",
+    "name": "Backside Feeble Grind",
+    "difficulty": "Expert",
+    "category": "Grind"
+  },
+  {
+    "id": "frontside_blunt_slide",
+    "name": "Frontside Blunt Slide",
+    "difficulty": "Expert",
+    "category": "Grind"
+  },
+  {
+    "id": "backside_blunt_slide",
+    "name": "Backside Blunt Slide",
+    "difficulty": "Expert",
+    "category": "Grind"
+  },
+  {
+    "id": "switch_darkslide",
+    "name": "Switch Darkslide",
+    "difficulty": "Expert",
+    "category": "Grind"
+  },
+  {
+    "id": "fakie_darkslide",
+    "name": "Fakie Darkslide",
+    "difficulty": "Expert",
+    "category": "Grind"
+  },
+  {
+    "id": "nollie_darkslide",
+    "name": "Nollie Darkslide",
+    "difficulty": "Expert",
+    "category": "Grind"
+  },
+  {
+    "id": "rock_to_fakie",
+    "name": "Rock to Fakie",
+    "difficulty": "Beginner",
+    "category": "Transition"
+  },
+  {
+    "id": "rock_n_roll",
+    "name": "Rock N Roll",
+    "difficulty": "Beginner",
+    "category": "Transition"
+  },
+  {
+    "id": "axle_stall",
+    "name": "Axle Stall",
+    "difficulty": "Beginner",
+    "category": "Transition"
+  },
+  {
+    "id": "tail_stall",
+    "name": "Tail Stall",
+    "difficulty": "Beginner",
+    "category": "Transition"
+  },
+  {
+    "id": "nose_stall",
+    "name": "Nose Stall",
+    "difficulty": "Beginner",
+    "category": "Transition"
+  },
+  {
+    "id": "pivot_fakie",
+    "name": "Pivot to Fakie",
+    "difficulty": "Intermediate",
+    "category": "Transition"
+  },
+  {
+    "id": "kickturn_transition",
+    "name": "Kickturn (Transition)",
+    "difficulty": "Beginner",
+    "category": "Transition"
+  },
+  {
+    "id": "drop_in",
+    "name": "Drop In",
+    "difficulty": "Beginner",
+    "category": "Transition"
+  },
+  {
+    "id": "acid_drop_transition",
+    "name": "Acid Drop (Transition)",
+    "difficulty": "Intermediate",
+    "category": "Transition"
+  },
+  {
+    "id": "frontside_air",
+    "name": "Frontside Air",
+    "difficulty": "Advanced",
+    "category": "Transition"
+  },
+  {
+    "id": "backside_air",
+    "name": "Backside Air",
+    "difficulty": "Advanced",
+    "category": "Transition"
+  },
+  {
+    "id": "method_air",
+    "name": "Method Air",
+    "difficulty": "Expert",
+    "category": "Transition"
+  },
+  {
+    "id": "stalefish",
+    "name": "Stalefish",
+    "difficulty": "Expert",
+    "category": "Transition"
+  },
+  {
+    "id": "melon",
+    "name": "Melon",
+    "difficulty": "Expert",
+    "category": "Transition"
+  },
+  {
+    "id": "indy",
+    "name": "Indy",
+    "difficulty": "Expert",
+    "category": "Transition"
+  },
+  {
+    "id": "nosegrab",
+    "name": "Nosegrab",
+    "difficulty": "Advanced",
+    "category": "Transition"
+  },
+  {
+    "id": "tailgrab",
+    "name": "Tailgrab",
+    "difficulty": "Advanced",
+    "category": "Transition"
+  },
+  {
+    "id": "disaster",
+    "name": "Disaster",
+    "difficulty": "Intermediate",
+    "category": "Transition"
+  },
+  {
+    "id": "fakie_disaster",
+    "name": "Fakie Disaster",
+    "difficulty": "Advanced",
+    "category": "Transition"
+  },
+  {
+    "id": "blunt_stall",
+    "name": "Blunt Stall",
+    "difficulty": "Advanced",
+    "category": "Transition"
+  },
+  {
+    "id": "noseblunt_stall",
+    "name": "Noseblunt Stall",
+    "difficulty": "Expert",
+    "category": "Transition"
+  },
+  {
+    "id": "invert",
+    "name": "Invert",
+    "difficulty": "Expert",
+    "category": "Transition"
+  },
+  {
+    "id": "handplant",
+    "name": "Handplant",
+    "difficulty": "Expert",
+    "category": "Transition"
+  },
+  {
+    "id": "eggplant",
+    "name": "Eggplant",
+    "difficulty": "Expert",
+    "category": "Transition"
+  },
+  {
+    "id": "madonna",
+    "name": "Madonna",
+    "difficulty": "Expert",
+    "category": "Transition"
+  },
+  {
+    "id": "lien_air",
+    "name": "Lien Air",
+    "difficulty": "Expert",
+    "category": "Transition"
+  },
+  {
+    "id": "judo_air",
+    "name": "Judo Air",
+    "difficulty": "Expert",
+    "category": "Transition"
+  }
+]

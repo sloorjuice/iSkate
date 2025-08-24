@@ -8,15 +8,17 @@ import { IconSymbol } from '@/components/ui/IconSymbol';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { useTintColor } from '@/hooks/useTintColor';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const tintColor = useTintColor();
 
   return (
     <Tabs
       screenOptions={{
         headerStyle: {
-          backgroundColor: TabBarBackground,
+          backgroundColor: Colors[colorScheme ?? 'light'].card,
         },
         headerTintColor: Colors[colorScheme ?? 'light'].text,
         headerTitleAlign: 'left',
@@ -26,22 +28,22 @@ export default function TabLayout() {
           fontSize: 52,
           fontFamily: 'Lalezar',
         },
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        tabBarActiveTintColor: tintColor,
         tabBarButton: HapticTab,
         tabBarBackground: TabBarBackground,
+        tabBarShowLabel: true,
         tabBarStyle: Platform.select({
           ios: {
-            // Use a transparent background on iOS to show the blur effect
             position: 'absolute',
           },
           default: {},
         }),
       }}>
-	  <Tabs.Screen
+      <Tabs.Screen
         name="skate-map"
         options={{
           title: 'Skate Map',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="location.fill" color={color} />,
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="map.fill"  color={color} />,
         }}
       />
       <Tabs.Screen

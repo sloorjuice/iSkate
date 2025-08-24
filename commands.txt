@@ -1,0 +1,8 @@
+npx eas build --platform ios --profile production
+eas submit --platform ios --profile production
+
+
+npx eas build --platform android 
+
+
+put in google-services.json before building

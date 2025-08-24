@@ -1,6 +1,31 @@
-# Welcome to your Expo app 👋
+# Welcome to iSkate
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+**The Ultimate Skateboarding Companion App — Built by skaters, for skaters.**
+
+<img width="250" height="250" alt="Lalezar png" src="https://github.com/user-attachments/assets/772d63da-35be-4595-91e6-1f6c03597f7d" />
+
+---
+
+## 🚀 Overview
+
+**iSkate** is a (WIP) all-in-one skateboarding app, currently built with a global skate spot map. The skate spot map allows the user to view nearby skate spots and create new ones.
+
+**Tech Stack:**
+
+- **React Native** – Cross-platform mobile app development.
+- **Expo** - React Native development framework.
+- **Firebase** – Realtime database, authentication, storage, and cloud functions.
+
+**Planned Features:**
+
+- **Trick List Tracker** - "Trick List" button in the profile screen to view that users Trick List and view your own to edit it. Completed with Sorting, Filtering and Searching.
+- **Community and Social** - Simple community features like creating and viewing posts, Friending, messaging, Group messaing and etc.
+
+- **S.K.A.T.E. Game Tracker** - Start a S.K.A.T.E Game with a nearby user to track a game of S.K.A.T.E. and save your statistics.
+- **Skate Video Scroller** -- TikTok, Yt Shorts and IG Reels inspired video scrolling screen.
+- **Skate Shop** - For buying Clothing and Skate gear.
+  
+---
 
 ## Get started
 
@@ -16,35 +41,8 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
    npx expo start
    ```
 
-In the output, you'll find options to open the app in a
+This app uses [Expo-Maps]() so you'll need to use a [development build](https://docs.expo.dev/develop/development-builds/introduction/) on an emulator or device instead of [Expo Go](https://expo.dev/go).
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+---
 
 ## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.

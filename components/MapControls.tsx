@@ -1,72 +1,79 @@
 import { ThemedText } from "@/components/ThemedText";
 import { useThemeColor } from "@/hooks/useThemeColor";
+import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { Pressable, StyleSheet, View } from "react-native";
 
 type MapControlsProps = {
+  loading?: boolean; // <-- add this
   selectedSpot: any;
   previewImage?: string;
   description?: string;
   types?: string[];
   locationIndex: number;
   markersLength: number;
-  onPrev: () => void;
-  onNext: () => void;
+  onOpenList: () => void;
   rating?: number;
-  skatedBy?: any[]; // <-- Add skatedBy prop
+  skatedBy?: any[];
 };
 
 export function MapControls({
+  loading,
   selectedSpot,
   locationIndex,
   markersLength,
-  onPrev,
-  onNext,
+  onOpenList,
   previewImage,
   description,
   types,
   rating,
-  skatedBy // <-- Add skatedBy prop
+  skatedBy
 }: MapControlsProps) {
-  const cardBg = useThemeColor({}, "background");
+  const cardBg = useThemeColor({}, "card");
   const cardShadow = useThemeColor({}, "icon");
   const buttonBg = useThemeColor({}, "tint");
   const buttonText = useThemeColor({}, "background");
-
-  console.log("selectedSpot", selectedSpot);
-
+  const nameColor = useThemeColor({}, "text");
+  const descriptionColor = useThemeColor({}, "description");
+  const typeBadgeBg = useThemeColor({}, "tint"); // Use tint as badge background
+  const typeBadgeText = useThemeColor({}, "background"); // Use background as badge text
+  
   return (
     <>
       <View style={{ flex: 8 }} pointerEvents="none" />
       <View style={styles.outerContainer} pointerEvents="auto">
         <View style={[styles.card, { backgroundColor: cardBg, shadowColor: cardShadow }]}>
-          <View style={styles.leftColumn}>
-            {previewImage && (
+          {previewImage && !loading && (
+            <View style={styles.leftColumn}>
               <Image
                 source={{ uri: previewImage }}
                 style={styles.previewImage}
                 contentFit="cover"
                 transition={300}
               />
-            )}
-          </View>
+            </View>
+          )}
           <View style={styles.rightColumn}>
             {selectedSpot && (
               <>
                 <View style={styles.nameRow}>
-                  <ThemedText style={styles.selectedSpotText} type="subtitle">
-                    {selectedSpot.name.slice(0, 22)}{selectedSpot.name.length > 22 ? "..." : ""}
+                  <ThemedText style={[styles.selectedSpotText, { color: nameColor }]} type="subtitle">
+                    {loading ? "Loading nearest spot..." : (
+                      selectedSpot?.name
+                        ? `${selectedSpot.name.slice(0, 22)}${selectedSpot.name.length > 22 ? "..." : ""}`
+                        : ""
+                    )}
                   </ThemedText>
-                  {typeof rating === "number" && (
+                  {!loading && typeof rating === "number" && (
                     <ThemedText style={styles.ratingText}>
                       ⭐ {rating.toFixed(1)}
                     </ThemedText>
                   )}
                 </View>
-                {(description || Array.isArray(skatedBy)) && (
+                {!loading && (description || Array.isArray(skatedBy)) && (
                   <View style={styles.descriptionRow}>
                     {description && (
-                      <ThemedText numberOfLines={2} style={styles.descriptionText}>
+                      <ThemedText numberOfLines={2} style={[styles.descriptionText, { color: descriptionColor }]}>
                         {description.slice(0, 28)}{description.length > 28 ? "..." : ""}
                       </ThemedText>
                     )}
@@ -77,10 +84,19 @@ export function MapControls({
                     )}
                   </View>
                 )}
-                {types && Array.isArray(types) && types.length > 0 && (
+                {!loading && types && Array.isArray(types) && types.length > 0 && (
                   <View style={styles.typesRow}>
                     {types.slice(0, 2).map((type, idx) => (
-                      <ThemedText key={type} style={styles.typeBadge}>
+                      <ThemedText
+                        key={type}
+                        style={[
+                          styles.typeBadge,
+                          {
+                            backgroundColor: typeBadgeBg,
+                            color: typeBadgeText,
+                          },
+                        ]}
+                      >
                         {type}
                       </ThemedText>
                     ))}
@@ -89,32 +105,46 @@ export function MapControls({
                         +{types.length - 2}
                       </ThemedText>
                     )}
+                    {/* Distance next to types */}
+                    {selectedSpot &&
+                      typeof selectedSpot.latitude === "number" &&
+                      typeof selectedSpot.longitude === "number" &&
+                      selectedSpot.userLocation &&
+                      typeof selectedSpot.userLocation.coords?.latitude === "number" &&
+                      typeof selectedSpot.userLocation.coords?.longitude === "number" &&
+                      typeof selectedSpot.getDistance === "function" && (
+                        <ThemedText style={{ fontSize: 12, color: descriptionColor, marginLeft: 6 }}>
+                          {(selectedSpot.getDistance(
+                            selectedSpot.userLocation.coords.latitude,
+                            selectedSpot.userLocation.coords.longitude,
+                            selectedSpot.latitude,
+                            selectedSpot.longitude
+                          ) / 1000).toFixed(2)} km away
+                        </ThemedText>
+                    )}
+                    {/* Or, if you pass distance as a prop: */}
+                    {typeof selectedSpot.distance === "number" && (
+                      <ThemedText style={{ fontSize: 12, color: descriptionColor, marginLeft: 6 }}>
+                        {(selectedSpot.distance / 1000).toFixed(2)} km away
+                      </ThemedText>
+                    )}
                   </View>
                 )}
               </>
             )}
           </View>
           <View style={styles.buttonStack}>
-            <Pressable
-              style={({ pressed }) => [
-                styles.smallButton,
-                { backgroundColor: buttonBg, opacity: pressed || locationIndex <= 0 ? 0.6 : 1 },
-              ]}
-              onPress={onPrev}
-              disabled={locationIndex <= 0}
-            >
-              <ThemedText style={[styles.buttonText, { color: buttonText }]}>Prev</ThemedText>
-            </Pressable>
-            <Pressable
-              style={({ pressed }) => [
-                styles.smallButton,
-                { backgroundColor: buttonBg, opacity: pressed || locationIndex >= markersLength - 1 ? 0.6 : 1 },
-              ]}
-              onPress={onNext}
-              disabled={locationIndex >= markersLength - 1}
-            >
-              <ThemedText style={[styles.buttonText, { color: buttonText }]}>Next</ThemedText>
-            </Pressable>
+            {!loading && (
+              <Pressable
+                style={({ pressed }) => [
+                  styles.menuButton,
+                  { backgroundColor: buttonBg, opacity: pressed ? 0.7 : 1 },
+                ]}
+                onPress={onOpenList}
+              >
+                <Ionicons name="menu" size={24} color={buttonText} />
+              </Pressable>
+            )}
           </View>
         </View>
       </View>
@@ -135,6 +165,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     padding: 16,
+    paddingTop: 28,
     width: "100%",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.12,
@@ -224,6 +255,14 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
     gap: 10,
     marginLeft: 8,
+  },
+  menuButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 8,
+    minWidth: 48,
+    alignItems: "center",
+    justifyContent: "center",
   },
   smallButton: {
     paddingHorizontal: 16,
