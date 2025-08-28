@@ -5,7 +5,7 @@ import { Image } from "expo-image";
 import { Pressable, StyleSheet, View } from "react-native";
 
 type MapControlsProps = {
-  loading?: boolean; // <-- add this
+  loading?: boolean;
   selectedSpot: any;
   previewImage?: string;
   description?: string;
@@ -13,6 +13,7 @@ type MapControlsProps = {
   locationIndex: number;
   markersLength: number;
   onOpenList: () => void;
+  onCardPress: () => void;
   rating?: number;
   skatedBy?: any[];
 };
@@ -23,6 +24,7 @@ export function MapControls({
   locationIndex,
   markersLength,
   onOpenList,
+  onCardPress,
   previewImage,
   description,
   types,
@@ -41,113 +43,115 @@ export function MapControls({
   return (
     <>
       <View style={{ flex: 8 }} pointerEvents="none" />
-      <View style={styles.outerContainer} pointerEvents="auto">
-        <View style={[styles.card, { backgroundColor: cardBg, shadowColor: cardShadow }]}>
-          {previewImage && !loading && (
-            <View style={styles.leftColumn}>
-              <Image
-                source={{ uri: previewImage }}
-                style={styles.previewImage}
-                contentFit="cover"
-                transition={300}
-              />
-            </View>
-          )}
-          <View style={styles.rightColumn}>
-            {selectedSpot && (
-              <>
-                <View style={styles.nameRow}>
-                  <ThemedText style={[styles.selectedSpotText, { color: nameColor }]} type="subtitle">
-                    {loading ? "Loading nearest spot..." : (
-                      selectedSpot?.name
-                        ? `${selectedSpot.name.slice(0, 22)}${selectedSpot.name.length > 22 ? "..." : ""}`
-                        : ""
-                    )}
-                  </ThemedText>
-                  {!loading && typeof rating === "number" && (
-                    <ThemedText style={styles.ratingText}>
-                      ⭐ {rating.toFixed(1)}
-                    </ThemedText>
+         <View style={styles.outerContainer} pointerEvents="auto">
+            <Pressable onPress={onCardPress}>
+                <View style={[styles.card, { backgroundColor: cardBg, shadowColor: cardShadow }]}>
+                  {previewImage && !loading && (
+                    <View style={styles.leftColumn}>
+                      <Image
+                        source={{ uri: previewImage }}
+                        style={styles.previewImage}
+                        contentFit="cover"
+                        transition={300}
+                      />
+                    </View>
                   )}
-                </View>
-                {!loading && (description || Array.isArray(skatedBy)) && (
-                  <View style={styles.descriptionRow}>
-                    {description && (
-                      <ThemedText numberOfLines={2} style={[styles.descriptionText, { color: descriptionColor }]}>
-                        {description.slice(0, 28)}{description.length > 28 ? "..." : ""}
-                      </ThemedText>
-                    )}
-                    {Array.isArray(skatedBy) && (
-                      <ThemedText style={styles.skatedByText}>
-                        🧍 {skatedBy.length}
-                      </ThemedText>
+                  <View style={styles.rightColumn}>
+                    {selectedSpot && (
+                      <>
+                        <View style={styles.nameRow}>
+                          <ThemedText style={[styles.selectedSpotText, { color: nameColor }]} type="subtitle">
+                            {loading ? "Loading nearest spot..." : (
+                              selectedSpot?.name
+                                ? `${selectedSpot.name.slice(0, 22)}${selectedSpot.name.length > 22 ? "..." : ""}`
+                                : ""
+                            )}
+                          </ThemedText>
+                          {!loading && typeof rating === "number" && (
+                            <ThemedText style={styles.ratingText}>
+                              ⭐ {rating.toFixed(1)}
+                            </ThemedText>
+                          )}
+                        </View>
+                        {!loading && (description || Array.isArray(skatedBy)) && (
+                          <View style={styles.descriptionRow}>
+                            {description && (
+                              <ThemedText numberOfLines={2} style={[styles.descriptionText, { color: descriptionColor }]}>
+                                {description.slice(0, 28)}{description.length > 28 ? "..." : ""}
+                              </ThemedText>
+                            )}
+                            {Array.isArray(skatedBy) && (
+                              <ThemedText style={styles.skatedByText}>
+                                🧍 {skatedBy.length}
+                              </ThemedText>
+                            )}
+                          </View>
+                        )}
+                        {!loading && types && Array.isArray(types) && types.length > 0 && (
+                          <View style={styles.typesRow}>
+                            {types.slice(0, 2).map((type, idx) => (
+                              <ThemedText
+                                key={type}
+                                style={[
+                                  styles.typeBadge,
+                                  {
+                                    backgroundColor: typeBadgeBg,
+                                    color: typeBadgeText,
+                                  },
+                                ]}
+                              >
+                                {type}
+                              </ThemedText>
+                            ))}
+                            {types.length > 2 && (
+                              <ThemedText style={styles.typeMore}>
+                                +{types.length - 2}
+                              </ThemedText>
+                            )}
+                            {/* Distance next to types */}
+                            {selectedSpot &&
+                              typeof selectedSpot.latitude === "number" &&
+                              typeof selectedSpot.longitude === "number" &&
+                              selectedSpot.userLocation &&
+                              typeof selectedSpot.userLocation.coords?.latitude === "number" &&
+                              typeof selectedSpot.userLocation.coords?.longitude === "number" &&
+                              typeof selectedSpot.getDistance === "function" && (
+                                <ThemedText style={{ fontSize: 12, color: descriptionColor, marginLeft: 6 }}>
+                                  {(selectedSpot.getDistance(
+                                    selectedSpot.userLocation.coords.latitude,
+                                    selectedSpot.userLocation.coords.longitude,
+                                    selectedSpot.latitude,
+                                    selectedSpot.longitude
+                                  ) / 1000).toFixed(2)} km away
+                                </ThemedText>
+                            )}
+                            {/* Or, if you pass distance as a prop: */}
+                            {typeof selectedSpot.distance === "number" && (
+                              <ThemedText style={{ fontSize: 12, color: descriptionColor, marginLeft: 6 }}>
+                                {(selectedSpot.distance / 1000).toFixed(2)} km away
+                              </ThemedText>
+                            )}
+                          </View>
+                        )}
+                      </>
                     )}
                   </View>
-                )}
-                {!loading && types && Array.isArray(types) && types.length > 0 && (
-                  <View style={styles.typesRow}>
-                    {types.slice(0, 2).map((type, idx) => (
-                      <ThemedText
-                        key={type}
-                        style={[
-                          styles.typeBadge,
-                          {
-                            backgroundColor: typeBadgeBg,
-                            color: typeBadgeText,
-                          },
+                  <View style={styles.buttonStack}>
+                    {!loading && (
+                      <Pressable
+                        style={({ pressed }) => [
+                          styles.menuButton,
+                          { backgroundColor: buttonBg, opacity: pressed ? 0.7 : 1 },
                         ]}
+                        onPress={onOpenList}
                       >
-                        {type}
-                      </ThemedText>
-                    ))}
-                    {types.length > 2 && (
-                      <ThemedText style={styles.typeMore}>
-                        +{types.length - 2}
-                      </ThemedText>
+                        <Ionicons name="menu" size={24} color={buttonText} />
+                      </Pressable>
                     )}
-                    {/* Distance next to types */}
-                    {selectedSpot &&
-                      typeof selectedSpot.latitude === "number" &&
-                      typeof selectedSpot.longitude === "number" &&
-                      selectedSpot.userLocation &&
-                      typeof selectedSpot.userLocation.coords?.latitude === "number" &&
-                      typeof selectedSpot.userLocation.coords?.longitude === "number" &&
-                      typeof selectedSpot.getDistance === "function" && (
-                        <ThemedText style={{ fontSize: 12, color: descriptionColor, marginLeft: 6 }}>
-                          {(selectedSpot.getDistance(
-                            selectedSpot.userLocation.coords.latitude,
-                            selectedSpot.userLocation.coords.longitude,
-                            selectedSpot.latitude,
-                            selectedSpot.longitude
-                          ) / 1000).toFixed(2)} km away
-                        </ThemedText>
-                    )}
-                    {/* Or, if you pass distance as a prop: */}
-                    {typeof selectedSpot.distance === "number" && (
-                      <ThemedText style={{ fontSize: 12, color: descriptionColor, marginLeft: 6 }}>
-                        {(selectedSpot.distance / 1000).toFixed(2)} km away
-                      </ThemedText>
-                    )}
-                  </View>
-                )}
-              </>
-            )}
-          </View>
-          <View style={styles.buttonStack}>
-            {!loading && (
-              <Pressable
-                style={({ pressed }) => [
-                  styles.menuButton,
-                  { backgroundColor: buttonBg, opacity: pressed ? 0.7 : 1 },
-                ]}
-                onPress={onOpenList}
-              >
-                <Ionicons name="menu" size={24} color={buttonText} />
-              </Pressable>
-            )}
-          </View>
-        </View>
-      </View>
+                </View> 
+             </View>  
+          </Pressable>   
+       </View>
     </>
   );
 }

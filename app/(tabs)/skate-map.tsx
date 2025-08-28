@@ -45,6 +45,8 @@ export default function SkateMap() {
 
   const [listModalVisible, setListModalVisible] = useState(false);
 
+  const [spotInfoModalVisible, setSpotInfoModalVisible] = useState(false);
+
   const [mapType, setMapType] = useState(AppleMaps.MapType.HYBRID);
   const { user } = useAuth();
   const bottom = useBottomTabOverflow();
@@ -374,6 +376,7 @@ export default function SkateMap() {
                   locationIndex={locationIndex}
                   markersLength={allMarkers.length}
                   onOpenList={() => setListModalVisible(true)}
+                  onCardPress={() => setSpotInfoModalVisible(true)}
                 />
               </SafeAreaView>
             </>
@@ -472,6 +475,31 @@ export default function SkateMap() {
             <Button title="Close" onPress={() => setModalVisible(false)} />
           </View>
         </View>
+      </Modal>
+
+      {/* Selected Spot Info Modal*/}
+      <Modal
+        visible={spotInfoModalVisible}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setSpotInfoModalVisible(false)}
+      >
+        <View style={{
+           flex: 1,
+           justifyContent: "center",
+           alignItems: "center",
+        }}>
+           <View style={{
+               backgroundColor: modalBg,
+               padding: 24,
+               borderRaidus: 12,
+               minWidth: 300,
+               alignItems: "center",
+           }}>
+              <ThemedText style={{ fontWeight: "bold", fontSize: 18, marginBottom: 8, color: modalText }}>Spot Title</ThemedText>
+              <Button title="Close" onPress={() => setSpotInfoModalVisible(false)} />
+           </View> 
+        </View>    
       </Modal>
 
       {/* Spot List Modal */}
