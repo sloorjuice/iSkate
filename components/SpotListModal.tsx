@@ -5,7 +5,8 @@ import { useThemeColor } from "@/hooks/useThemeColor";
 import { Ionicons } from '@expo/vector-icons'; // or any icon lib you use
 import { Image } from "expo-image";
 import { useState } from "react";
-import { Button, FlatList, KeyboardAvoidingView, Modal, Platform, TextInput, TouchableOpacity, View } from "react-native";
+import { FlatList, KeyboardAvoidingView, Platform, TextInput, TouchableOpacity, View } from "react-native";
+import Modal from "react-native-modal";
 import { ThemedText } from "./ThemedText";
 
 type SpotListModalProps = {
@@ -62,10 +63,15 @@ export function SpotListModal({
 
   return (
     <Modal
-      visible={visible}
-      animationType="slide"
-      onRequestClose={onClose}
-      transparent
+      isVisible={visible}
+      onBackdropPress={onClose}
+      onSwipeComplete={onClose}
+      swipeDirection={["down"]}
+      style={{
+        justifyContent: "flex-end",
+        margin: 0,
+      }}
+      propagateSwipe
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -82,70 +88,70 @@ export function SpotListModal({
             width: "100%",
             maxHeight: "80%",
             padding: 16,
-            paddingBottom: Platform.OS === "ios" ? 32 : 16, // Adjust padding for iOS and Android
+            paddingBottom: 0
           }}
         >
-          <ThemedText style={{ fontWeight: "bold", fontSize: 18, marginBottom: 12, color: modalText }}>
-            All Skate Spots
-          </ThemedText>
-
-          {/* Search Toggle */}
-          <TouchableOpacity
-            onPress={() => setShowSearch((v) => !v)}
-            style={{ flexDirection: "row", alignItems: "center", marginBottom: 4 }}
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginBottom: 12,
+            }}
           >
-            <ThemedText style={{ color: modalText, fontWeight: "bold", fontSize: 15, marginRight: 6 }}>
-              Search
+            <ThemedText style={{ fontWeight: "bold", fontSize: 18, color: modalText }}>
+              All Skate Spots
             </ThemedText>
-            <Ionicons name={showSearch ? "chevron-up" : "chevron-down"} size={18} color={modalText} />
-          </TouchableOpacity>
-          {showSearch && (
-            <View style={{ flexDirection: "row", marginBottom: 8, gap: 8 }}>
-              <TextInput
-                placeholder="Search spots..."
-                value={search}
-                onChangeText={setSearch}
-                style={{
-                  flex: 1,
-                  backgroundColor: modalBg,
-                  borderRadius: 8,
-                  padding: 8,
-                  color: modalText,
-                  minWidth: 0,
-                }}
-                placeholderTextColor={modalDesc}
-                returnKeyType="search"
-              />
-              <TouchableOpacity
-                onPress={() => setShowDifficulty((v) => !v)}
-                style={{
-                  backgroundColor: modalBg,
-                  borderRadius: 8,
-                  padding: 8,
-                  borderWidth: 1,
-                  borderColor: modalBorder,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Ionicons name="options-outline" size={20} color={modalText} />
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => setShowSort((v) => !v)}
-                style={{
-                  backgroundColor: modalBg,
-                  borderRadius: 8,
-                  padding: 8,
-                  borderWidth: 1,
-                  borderColor: modalBorder,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Ionicons name="swap-vertical-outline" size={20} color={modalText} />
-              </TouchableOpacity>
-            </View>
-          )}
+            <TouchableOpacity onPress={onClose} style={{ padding: 4 }}>
+              <Ionicons name="close" size={24} color={modalText} />
+            </TouchableOpacity>
+          </View>
+
+          <View style={{ flexDirection: "row", marginBottom: 8, gap: 8 }}>
+            <TextInput
+              placeholder="Search spots..."
+              value={search}
+              onChangeText={setSearch}
+              style={{
+                flex: 1,
+                backgroundColor: modalBg,
+                borderRadius: 8,
+                padding: 8,
+                color: modalText,
+                minWidth: 0,
+              }}
+              placeholderTextColor={modalDesc}
+              returnKeyType="search"
+            />
+            <TouchableOpacity
+              onPress={() => setShowDifficulty((v) => !v)}
+              style={{
+                backgroundColor: modalBg,
+                borderRadius: 8,
+                padding: 8,
+                borderWidth: 1,
+                borderColor: modalBorder,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Ionicons name="options-outline" size={20} color={modalText} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => setShowSort((v) => !v)}
+              style={{
+                backgroundColor: modalBg,
+                borderRadius: 8,
+                padding: 8,
+                borderWidth: 1,
+                borderColor: modalBorder,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Ionicons name="swap-vertical-outline" size={20} color={modalText} />
+            </TouchableOpacity>
+          </View>
 
           {/* Filter Section (Difficulty & Types) */}
           {showDifficulty && (
@@ -241,7 +247,7 @@ export function SpotListModal({
                 }}
               >
                 <ThemedText style={{ color: typeBadgeText, fontSize: 13 }}>
-                  {sortDirection === "asc" ? "↑" : "↓"}
+                  {sortDirection === "asc" ? "â†‘" : "â†“"}
                 </ThemedText>
               </TouchableOpacity>
             </View>
@@ -308,7 +314,7 @@ export function SpotListModal({
                     </ThemedText>
                     {typeof item.rating === "number" && (
                       <ThemedText style={{ fontSize: 13, color: "#f5a623", fontWeight: "bold" }}>
-                        ⭐ {item.rating.toFixed(1)}
+                        â­ {item.rating.toFixed(1)}
                       </ThemedText>
                     )}
                   </View>
@@ -376,7 +382,7 @@ export function SpotListModal({
                     )}
                     {Array.isArray(item.skatedBy) && (
                       <ThemedText style={{ fontSize: 11, color: "#888", marginLeft: 4 }}>
-                        🧍 {item.skatedBy.length}
+                        ðŸ§ {item.skatedBy.length}
                       </ThemedText>
                     )}
                     {userLocation && (
@@ -394,7 +400,6 @@ export function SpotListModal({
               </TouchableOpacity>
             )}
           />
-          <Button title="Close" onPress={onClose} />
         </View>
       </KeyboardAvoidingView>
     </Modal>

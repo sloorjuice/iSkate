@@ -9,7 +9,8 @@ import * as Location from 'expo-location';
 import { AppleMaps } from "expo-maps";
 import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import { useCallback, useEffect, useMemo, useRef, useState, type JSX } from "react";
-import { Button, Modal, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Button, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import Modal from "react-native-modal";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export type SkateSpot = {
@@ -425,6 +426,7 @@ export default function SkateMap() {
                   locationIndex={locationIndex}
                   markersLength={allMarkers.length}
                   onOpenList={() => setListModalVisible(true)}
+                  onCardPress={() => setSpotInfoModalVisible(true)}
                 />
               </SafeAreaView>
             </>
@@ -465,10 +467,15 @@ export default function SkateMap() {
       {MapView}
       {/* Create Spot Modal (unchanged) */}
       <Modal
-        visible={modalVisible}
-        transparent
-        animationType="slide"
-        onRequestClose={() => setModalVisible(false)}
+      isVisible={modalVisible}
+      onBackdropPress={() => setModalVisible(false)}
+      onSwipeComplete={() => setModalVisible(false)}
+      swipeDirection={["down"]}
+      style={{
+        justifyContent: "flex-end",
+        margin: 0,
+      }}
+      propagateSwipe
       >
         <View style={{
           flex: 1,
@@ -493,10 +500,15 @@ export default function SkateMap() {
 
       {/* Selected Spot Info Modal*/}
       <Modal
-        visible={spotInfoModalVisible}
-        transparent
-        animationType="slide"
-        onRequestClose={() => setSpotInfoModalVisible(false)}
+        isVisible={spotInfoModalVisible}
+        onBackdropPress={() => setSpotInfoModalVisible(false)}
+        onSwipeComplete={() => setSpotInfoModalVisible(false)}
+        swipeDirection={["down"]}
+        style={{
+          justifyContent: "flex-end",
+          margin: 0,
+        }}
+        propagateSwipe
       >
         <View style={{
            flex: 1,
@@ -506,7 +518,7 @@ export default function SkateMap() {
            <View style={{
                backgroundColor: modalBg,
                padding: 24,
-               borderRaidus: 12,
+               borderRadius: 12,
                minWidth: 300,
                alignItems: "center",
            }}>
