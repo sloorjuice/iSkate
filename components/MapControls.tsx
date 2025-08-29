@@ -145,6 +145,32 @@ export function MapControls({
                         ]}
                         onPress={onOpenList}
                       >
+                        {type}
+                      </ThemedText>
+                    ))}
+                    {types.length > 2 && (
+                      <ThemedText style={styles.typeMore}>
+                        +{types.length - 2}
+                      </ThemedText>
+                    )}
+                    {/* Distance next to types */}
+                    {selectedSpot &&
+                      typeof selectedSpot.latitude === "number" &&
+                      typeof selectedSpot.longitude === "number" &&
+                      selectedSpot.userLocation &&
+                      typeof selectedSpot.userLocation.coords?.latitude === "number" &&
+                      typeof selectedSpot.userLocation.coords?.longitude === "number" &&
+                      typeof selectedSpot.getDistance === "function" && (
+                        <ThemedText style={{ fontSize: 12, color: descriptionColor, marginLeft: 6 }}>
+                          {(
+                            selectedSpot.getDistance(
+                              selectedSpot.userLocation.coords.latitude,
+                              selectedSpot.userLocation.coords.longitude,
+                              selectedSpot.latitude,
+                              selectedSpot.longitude
+                            ) / 1609.34
+                          ).toFixed(2)} miles away
+                        </ThemedText>
                         <Ionicons name="menu" size={24} color={buttonText} />
                       </Pressable>
                     )}
