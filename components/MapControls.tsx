@@ -41,109 +41,64 @@ export function MapControls({
   const typeBadgeText = useThemeColor({}, "background"); // Use background as badge text
   
   return (
-    <>
-      <View style={{ flex: 8 }} pointerEvents="none" />
-         <View style={styles.outerContainer} pointerEvents="auto">
-            <Pressable onPress={onCardPress}>
-                <View style={[styles.card, { backgroundColor: cardBg, shadowColor: cardShadow }]}>
-                  {previewImage && !loading && (
-                    <View style={styles.leftColumn}>
-                      <Image
-                        source={{ uri: previewImage }}
-                        style={styles.previewImage}
-                        contentFit="cover"
-                        transition={300}
-                      />
-                    </View>
+  <>
+    <View style={{ flex: 8 }} pointerEvents="none" />
+    <View style={styles.outerContainer} pointerEvents="auto">
+      <Pressable onPress={onCardPress}>
+        <View style={[styles.card, { backgroundColor: cardBg, shadowColor: cardShadow }]}>
+          {previewImage && !loading && (
+            <View style={styles.leftColumn}>
+              <Image
+                source={{ uri: previewImage }}
+                style={styles.previewImage}
+                contentFit="cover"
+                transition={300}
+              />
+            </View>
+          )}
+          <View style={styles.rightColumn}>
+            {selectedSpot && (
+              <>
+                <View style={styles.nameRow}>
+                  <ThemedText style={[styles.selectedSpotText, { color: nameColor }]} type="subtitle">
+                    {loading ? "Loading nearest spot..." : (
+                      selectedSpot?.name
+                        ? `${selectedSpot.name.slice(0, 22)}${selectedSpot.name.length > 22 ? "..." : ""}`
+                        : ""
+                    )}
+                  </ThemedText>
+                  {!loading && typeof rating === "number" && (
+                    <ThemedText style={styles.ratingText}>
+                      ⭐ {rating.toFixed(1)}
+                    </ThemedText>
                   )}
-                  <View style={styles.rightColumn}>
-                    {selectedSpot && (
-                      <>
-                        <View style={styles.nameRow}>
-                          <ThemedText style={[styles.selectedSpotText, { color: nameColor }]} type="subtitle">
-                            {loading ? "Loading nearest spot..." : (
-                              selectedSpot?.name
-                                ? `${selectedSpot.name.slice(0, 22)}${selectedSpot.name.length > 22 ? "..." : ""}`
-                                : ""
-                            )}
-                          </ThemedText>
-                          {!loading && typeof rating === "number" && (
-                            <ThemedText style={styles.ratingText}>
-                              ⭐ {rating.toFixed(1)}
-                            </ThemedText>
-                          )}
-                        </View>
-                        {!loading && (description || Array.isArray(skatedBy)) && (
-                          <View style={styles.descriptionRow}>
-                            {description && (
-                              <ThemedText numberOfLines={2} style={[styles.descriptionText, { color: descriptionColor }]}>
-                                {description.slice(0, 28)}{description.length > 28 ? "..." : ""}
-                              </ThemedText>
-                            )}
-                            {Array.isArray(skatedBy) && (
-                              <ThemedText style={styles.skatedByText}>
-                                🧍 {skatedBy.length}
-                              </ThemedText>
-                            )}
-                          </View>
-                        )}
-                        {!loading && types && Array.isArray(types) && types.length > 0 && (
-                          <View style={styles.typesRow}>
-                            {types.slice(0, 2).map((type, idx) => (
-                              <ThemedText
-                                key={type}
-                                style={[
-                                  styles.typeBadge,
-                                  {
-                                    backgroundColor: typeBadgeBg,
-                                    color: typeBadgeText,
-                                  },
-                                ]}
-                              >
-                                {type}
-                              </ThemedText>
-                            ))}
-                            {types.length > 2 && (
-                              <ThemedText style={styles.typeMore}>
-                                +{types.length - 2}
-                              </ThemedText>
-                            )}
-                            {/* Distance next to types */}
-                            {selectedSpot &&
-                              typeof selectedSpot.latitude === "number" &&
-                              typeof selectedSpot.longitude === "number" &&
-                              selectedSpot.userLocation &&
-                              typeof selectedSpot.userLocation.coords?.latitude === "number" &&
-                              typeof selectedSpot.userLocation.coords?.longitude === "number" &&
-                              typeof selectedSpot.getDistance === "function" && (
-                                <ThemedText style={{ fontSize: 12, color: descriptionColor, marginLeft: 6 }}>
-                                  {(selectedSpot.getDistance(
-                                    selectedSpot.userLocation.coords.latitude,
-                                    selectedSpot.userLocation.coords.longitude,
-                                    selectedSpot.latitude,
-                                    selectedSpot.longitude
-                                  ) / 1000).toFixed(2)} km away
-                                </ThemedText>
-                            )}
-                            {/* Or, if you pass distance as a prop: */}
-                            {typeof selectedSpot.distance === "number" && (
-                              <ThemedText style={{ fontSize: 12, color: descriptionColor, marginLeft: 6 }}>
-                                {(selectedSpot.distance / 1000).toFixed(2)} km away
-                              </ThemedText>
-                            )}
-                          </View>
-                        )}
-                      </>
+                </View>
+                {!loading && (description || Array.isArray(skatedBy)) && (
+                  <View style={styles.descriptionRow}>
+                    {description && (
+                      <ThemedText numberOfLines={2} style={[styles.descriptionText, { color: descriptionColor }]}>
+                        {description.slice(0, 28)}{description.length > 28 ? "..." : ""}
+                      </ThemedText>
+                    )}
+                    {Array.isArray(skatedBy) && (
+                      <ThemedText style={styles.skatedByText}>
+                        🧍 {skatedBy.length}
+                      </ThemedText>
                     )}
                   </View>
-                  <View style={styles.buttonStack}>
-                    {!loading && (
-                      <Pressable
-                        style={({ pressed }) => [
-                          styles.menuButton,
-                          { backgroundColor: buttonBg, opacity: pressed ? 0.7 : 1 },
+                )}
+                {!loading && types && Array.isArray(types) && types.length > 0 && (
+                  <View style={styles.typesRow}>
+                    {types.slice(0, 2).map((type, idx) => (
+                      <ThemedText
+                        key={type}
+                        style={[
+                          styles.typeBadge,
+                          {
+                            backgroundColor: typeBadgeBg,
+                            color: typeBadgeText,
+                          },
                         ]}
-                        onPress={onOpenList}
                       >
                         {type}
                       </ThemedText>
@@ -162,23 +117,41 @@ export function MapControls({
                       typeof selectedSpot.userLocation.coords?.longitude === "number" &&
                       typeof selectedSpot.getDistance === "function" && (
                         <ThemedText style={{ fontSize: 12, color: descriptionColor, marginLeft: 6 }}>
-                          {(
-                            selectedSpot.getDistance(
-                              selectedSpot.userLocation.coords.latitude,
-                              selectedSpot.userLocation.coords.longitude,
-                              selectedSpot.latitude,
-                              selectedSpot.longitude
-                            ) / 1609.34
-                          ).toFixed(2)} miles away
+                          {(selectedSpot.getDistance(
+                            selectedSpot.userLocation.coords.latitude,
+                            selectedSpot.userLocation.coords.longitude,
+                            selectedSpot.latitude,
+                            selectedSpot.longitude
+                          ) / 1609.34).toFixed(2)} mi away
                         </ThemedText>
-                        <Ionicons name="menu" size={24} color={buttonText} />
-                      </Pressable>
                     )}
-                </View> 
-             </View>  
-          </Pressable>   
-       </View>
-    </>
+                    {typeof selectedSpot.distance === "number" && (
+                      <ThemedText style={{ fontSize: 12, color: descriptionColor, marginLeft: 6 }}>
+                        {(selectedSpot.distance / 1609.34).toFixed(2)} mi away
+                      </ThemedText>
+                    )}
+                  </View>
+                )}
+              </>
+            )}
+          </View>
+          <View style={styles.buttonStack}>
+            {!loading && (
+              <Pressable
+                style={({ pressed }) => [
+                  styles.menuButton,
+                  { backgroundColor: buttonBg, opacity: pressed ? 0.7 : 1 },
+                ]}
+                onPress={onOpenList}
+              >
+                <Ionicons name="menu" size={24} color={buttonText} />
+              </Pressable>
+            )}
+          </View>
+        </View>
+      </Pressable>
+    </View>
+  </>
   );
 }
 
@@ -231,6 +204,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderWidth: 1,
     borderColor: "#eee",
+    marginTop: -32,
     backgroundColor: "#222",
   },
   selectedSpotText: {
@@ -275,6 +249,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     paddingHorizontal: 6,
     paddingVertical: 2,
+    marginBottom: 20,
   },
   typeMore: {
     fontSize: 12,
@@ -289,8 +264,9 @@ const styles = StyleSheet.create({
   menuButton: {
     paddingHorizontal: 16,
     paddingVertical: 8,
-    borderRadius: 8,
+    borderRadius: 12,
     minWidth: 48,
+    marginTop: -48,
     alignItems: "center",
     justifyContent: "center",
   },
