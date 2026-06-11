@@ -1,0 +1,37 @@
+[
+  {
+    "id": 0,
+    "name": "Ollie",
+    "difficulty": "Beginner",
+    "category": "Pop",
+    "summary": "The foundational trick of skateboarding. The rider pops the tail of the board while sliding their front foot up to jump into the air with the board."
+  },
+  {
+    "id": 1,
+    "name": "Shuv It",
+    "difficulty": "Beginner",
+    "category": "Flatground",
+    "summary": "The board rotates 180 degrees under the rider's feet without popping off the ground. The rider jumps slightly forward to catch it."
+  },
+  {
+    "id": 2,
+    "name": "Pop Shuv It",
+    "difficulty": "Beginner",
+    "category": "Pop",
+    "summary": "A combination of an Ollie and a Shuv It. The tail is snapped against the ground to get airtime while the back foot scoops the board 180 degrees."
+  },
+  {
+    "id": 3,
+    "name": "HeelFlip",
+    "difficulty": "Intermediate",
+    "category": "Flip",
+    "summary": "An ollie where the rider flicks their front foot out to the side, causing the board to spin 360 degrees along its longitudinal axis before landing."
+  },
+  {
+    "id": 4,
+    "name": "Kickflip",
+    "difficulty": "Intermediate",
+    "category": "Flip",
+    "summary": "An ollie where the rider flicks their front foot out to the side, causing the board to spin 360 degrees along its longitudinal axis before landing."
+  }
+]

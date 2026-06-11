@@ -1,4 +1,4 @@
-//
+ //
 //  ContentView.swift
 //  iSkate
 //
@@ -6,19 +6,25 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct ContentView: View {
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        TabView {
+            Tab(Constants.trickListString, systemImage: Constants.trickListIconString) {
+                TrickListView()
+            }
+            Tab(Constants.profileString, systemImage: Constants.profileIconString) {
+                Text(Constants.profileString,)
+            }
+            Tab(Constants.settingsString, systemImage: Constants.settingsIconString) {
+                Text(Constants.settingsString,)
+            }
         }
-        .padding()
     }
 }
 
 #Preview {
     ContentView()
+        .modelContainer(previewModelContainer)
 }
