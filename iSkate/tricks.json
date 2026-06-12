@@ -1,37 +1,72 @@
 [
-  {
+    {
     "id": 0,
+    "name": "Manual",
+    "difficulty": "Beginner",
+    "category": "Flatground",
+    "summary": "the rider shifts their weight onto the tail of the board lifting the nose of the board while rolling."
+    },
+    {
+    "id": 1,
+    "name": "Kickturn",
+    "difficulty": "Beginner",
+    "category": "Flatground",
+    "summary": "the rider shifts their weight onto the tail of the board lifting the nose of the board long enough to change their direction quickly while moving."
+    },
+    {
+    "id": 2,
     "name": "Ollie",
     "difficulty": "Beginner",
     "category": "Pop",
     "summary": "The foundational trick of skateboarding. The rider pops the tail of the board while sliding their front foot up to jump into the air with the board."
-  },
-  {
-    "id": 1,
-    "name": "Shuv It",
+    },
+    {
+    "id": 3,
+    "name": "Shuvit",
     "difficulty": "Beginner",
     "category": "Flatground",
-    "summary": "The board rotates 180 degrees under the rider's feet without popping off the ground. The rider jumps slightly forward to catch it."
-  },
-  {
-    "id": 2,
-    "name": "Pop Shuv It",
+    "summary": "The rider uses their backfoot to scoop the tail while doing a little hop to land on the board after it spins 180 degrees underneath them."
+    },
+    {
+    "id": 4,
+    "name": "Pop Shuvit",
     "difficulty": "Beginner",
     "category": "Pop",
-    "summary": "A combination of an Ollie and a Shuv It. The tail is snapped against the ground to get airtime while the back foot scoops the board 180 degrees."
-  },
-  {
-    "id": 3,
-    "name": "HeelFlip",
+    "summary": "The rider pops and scoops the tail of the board then jumping to land on the board after it spins 180 degrees underneath them."
+    },
+    {
+    "id": 5,
+    "name": "Heelflip",
     "difficulty": "Intermediate",
     "category": "Flip",
-    "summary": "An ollie where the rider flicks their front foot out to the side, causing the board to spin 360 degrees along its longitudinal axis before landing."
-  },
-  {
-    "id": 4,
+    "summary": "The rider pops the tail of the board while sliding their foot up then flicking with their heel to flip the board underneath them."
+    },
+    {
+    "id": 6,
     "name": "Kickflip",
     "difficulty": "Intermediate",
     "category": "Flip",
-    "summary": "An ollie where the rider flicks their front foot out to the side, causing the board to spin 360 degrees along its longitudinal axis before landing."
-  }
+    "summary": "The rider pops the tail of the board while sliding their foot up then flicking with their feet to flip the board underneath them."
+    },
+    {
+    "id": 7,
+    "name": "Varial Heelflip",
+    "difficulty": "Expert",
+    "category": "Flip",
+    "summary": "The rider combines a Heelflip with a Shuvit to flip the board while it spins 180° underneath them."
+    },
+    {
+    "id": 8,
+    "name": "Varial Kickflip",
+    "difficulty": "Expert",
+    "category": "Flip",
+    "summary": "The rider combines a Kickflip with a Shuvit to flip the board while it spins 180° underneath them."
+    },
+    {
+    "id": 9,
+    "name": "360 Flip (Tre flip)",
+    "difficulty": "Expert",
+    "category": "Flip",
+    "summary": "The rider pops the tail of the board, scooping and flicking it to flip it while it spins 360° underneath them."
+    }
 ]

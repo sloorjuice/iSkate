@@ -9,7 +9,6 @@ import SwiftData
 
 @Model
 class Trick: Decodable, Identifiable, Hashable {
-    // 1. Change type from String to Int
     @Attribute(.unique) var id: Int
     var name: String
     var difficulty: String
@@ -17,7 +16,6 @@ class Trick: Decodable, Identifiable, Hashable {
     var summary: String
     var isCompleted: Bool
     
-    // 2. Update type here to Int
     init(id: Int, name: String, difficulty: String, category: String, summary: String, isCompleted: Bool) {
         self.id = id
         self.name = name
@@ -38,7 +36,6 @@ class Trick: Decodable, Identifiable, Hashable {
     
     required init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        // 3. Decode as an Int instead of a String
         id = try container.decodeIfPresent(Int.self, forKey: .id) ?? 0
         name = try container.decodeIfPresent(String.self, forKey: .name) ?? ""
         difficulty = try container.decodeIfPresent(String.self, forKey: .difficulty) ?? ""

@@ -24,23 +24,30 @@ func loadTricks() -> [Trick] {
     }
 }
 
-@MainActor
-let previewModelContainer: ModelContainer = {
-    do {
-        // Create an isolated in-memory configuration so it doesn't touch real user data
-        let configuration = ModelConfiguration(isStoredInMemoryOnly: true)
-        let container = try ModelContainer(for: Trick.self, configurations: configuration)
+extension ModelContainer {
+    @MainActor
+    static var previewContainer: ModelContainer = {
+        let schema = Schema([Trick.self])
+        // Keep it strictly in-memory so it's fast and clears out every time the canvas reloads
+        let configuration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
         
-        // Seed the in-memory context immediately with your JSON data
-        let context = container.mainContext
-        let sampleTricks = loadTricks()
-        
-        for trick in sampleTricks {
-            context.insert(trick)
+        do {
+            let container = try ModelContainer(for: schema, configurations: [configuration])
+            let context = container.mainContext
+            
+            // Fetch your array of tricks using your existing bundle loader
+            let sampleTricks = loadTricks()
+            
+            // Insert them directly into the context immediately
+            for trick in sampleTricks {
+                context.insert(trick)
+            }
+            
+            // Save the context right away so the preview has immediate access
+            try? context.save()
+            return container
+        } catch {
+            fatalError("Failed to create preview container: \(error)")
         }
-        
-        return container
-    } catch {
-        fatalError("Failed to create preview container: \(error.localizedDescription)")
-    }
-}()
+    }()
+}

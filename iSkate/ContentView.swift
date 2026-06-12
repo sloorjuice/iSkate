@@ -15,10 +15,10 @@ struct ContentView: View {
                 TrickListView()
             }
             Tab(Constants.profileString, systemImage: Constants.profileIconString) {
-                Text(Constants.profileString,)
+                Text(Constants.profileString)
             }
             Tab(Constants.settingsString, systemImage: Constants.settingsIconString) {
-                Text(Constants.settingsString,)
+                Text(Constants.settingsString)
             }
         }
     }
@@ -26,5 +26,5 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
-        .modelContainer(previewModelContainer)
+        .modelContainer(.previewContainer)
 }
