@@ -35,19 +35,23 @@ struct TrickDetailView: View {
     private var headerSection: some View {
         VStack(alignment: .leading) {
             VStack(alignment: .leading) {
-                Text(trick.name)
-                    .bold()
-                    .font(.title)
-                
-                HStack {
-                    Text(trick.difficulty)
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                    Text("•").foregroundColor(.secondary)
-                    Text(trick.category)
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
+                HStack{
+                    Text(trick.name)
+                        .bold()
+                        .font(.title)
+                    
+                    Spacer()
                 }
+                    
+                    HStack {
+                        Text(trick.difficulty)
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                        Text("•").foregroundColor(.secondary)
+                        Text(trick.category)
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                    }
             }
             .padding(.top, 8)
             .padding(.leading, 8)
