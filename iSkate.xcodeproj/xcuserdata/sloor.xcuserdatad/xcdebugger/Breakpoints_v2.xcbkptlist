@@ -14,9 +14,9 @@
             filePath = "iSkate/Trick.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "31"
-            endingLineNumber = "31"
-            landmarkName = "init(id:name:difficulty:category:summary:resources:isCompleted:)"
+            startingLineNumber = "34"
+            endingLineNumber = "34"
+            landmarkName = "init(id:name:difficulty:category:summary:resources:tips:isCompleted:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

@@ -16,18 +16,21 @@ class Trick: Decodable, Identifiable, Hashable {
     var category: String
     var summary: String
     var resources: [String]?
+    var tips: [String]?
+    
     var isCompleted: Bool
     
     var cachedVideoIds: [String]?
     var lastUpdated: Date?
     
-    init(id: Int, name: String, difficulty: String, category: String, summary: String, resources: [String]?, isCompleted: Bool) {
+    init(id: Int, name: String, difficulty: String, category: String, summary: String, resources: [String]?, tips: [String]?, isCompleted: Bool) {
         self.id = id
         self.name = name
         self.difficulty = difficulty
         self.category = category
         self.summary = summary
         self.resources = resources
+        self.tips = tips
         self.isCompleted = isCompleted
     }
     
@@ -38,6 +41,7 @@ class Trick: Decodable, Identifiable, Hashable {
         case category
         case summary
         case resources
+        case tips
         case isCompleted
     }
     
@@ -49,6 +53,7 @@ class Trick: Decodable, Identifiable, Hashable {
         category = try container.decodeIfPresent(String.self, forKey: .category) ?? ""
         summary = try container.decodeIfPresent(String.self, forKey: .summary) ?? ""
         resources = try container.decodeIfPresent(Array.self, forKey: .resources) ?? nil
+        tips = try container.decodeIfPresent(Array.self, forKey: .tips) ?? nil
         isCompleted = try container.decodeIfPresent(Bool.self, forKey: .isCompleted) ?? false
         
         self.cachedVideoIds = nil

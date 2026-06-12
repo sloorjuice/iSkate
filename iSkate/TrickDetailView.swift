@@ -19,6 +19,8 @@ struct TrickDetailView: View {
                 
                 Divider()
                 
+                tipsSection
+                
                 resourcesSection
                 
                 tutorialsSection
@@ -63,6 +65,35 @@ struct TrickDetailView: View {
         }
         .background(Color(.secondarySystemBackground))
         .clipShape(RoundedRectangle(cornerRadius: 10))
+    }
+    
+    @ViewBuilder
+    private var tipsSection: some View {
+        if let tips = trick.tips {
+            VStack(alignment: .leading) {
+                HStack {
+                    Text("Tips")
+                        .font(.headline)
+                        .bold()
+                        .padding(.top, 8)
+                        .padding(.leading, 8)
+                    
+                    Spacer()
+                }
+                
+                VStack(alignment: .leading, spacing: 8) {
+                    ForEach(tips, id: \.self) { tip in
+                        Text("• \(tip)")
+                            .font(.footnote)
+                            .padding(.horizontal, 8)
+                    }
+                }
+                .padding(.horizontal, 8)
+                .padding(.bottom, 8)
+            }
+            .background(Color(.secondarySystemBackground))
+            .clipShape(RoundedRectangle(cornerRadius: 10))
+        }
     }
     
     @ViewBuilder
