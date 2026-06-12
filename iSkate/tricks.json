@@ -4,69 +4,80 @@
     "name": "Manual",
     "difficulty": "Beginner",
     "category": "Flatground",
-    "summary": "the rider shifts their weight onto the tail of the board lifting the nose of the board while rolling."
+    "summary": "the rider shifts their weight onto the tail of the board lifting the nose of the board while rolling.",
+    "resources": ["https://www.skateboardhere.com/manual.html"]
     },
     {
     "id": 1,
     "name": "Kickturn",
     "difficulty": "Beginner",
     "category": "Flatground",
-    "summary": "the rider shifts their weight onto the tail of the board lifting the nose of the board long enough to change their direction quickly while moving."
+    "summary": "the rider shifts their weight onto the tail of the board lifting the nose of the board long enough to change their direction quickly while moving.",
+    "resources": ["https://www.skateboardhere.com/kickturn.html"]
     },
     {
     "id": 2,
     "name": "Ollie",
     "difficulty": "Beginner",
     "category": "Pop",
-    "summary": "The foundational trick of skateboarding. The rider pops the tail of the board while sliding their front foot up to jump into the air with the board."
+    "summary": "The foundational trick of skateboarding. The rider pops the tail of the board while sliding their front foot up to jump into the air with the board.",
+    "resources": ["https://www.skateboardhere.com/skateboard-ollie.html"],
+    "tips": ["Learn to properly pop your board. Stand on the ground in front of your board and use your backfoot to practice popping your board into the air.", "If your ollies rocket into the air, it's caused from not properly jumping and bringing your backfoot up.", "The ollie is one continuous motion of popping the board, jumping into the air, lyfting your backfoot to level out the board, then landing."]
     },
     {
     "id": 3,
     "name": "Shuvit",
     "difficulty": "Beginner",
     "category": "Flatground",
-    "summary": "The rider uses their backfoot to scoop the tail while doing a little hop to land on the board after it spins 180 degrees underneath them."
+    "summary": "The rider uses their backfoot to scoop the tail while doing a little hop to land on the board after it spins 180 degrees underneath them.",
+    "resources": ["https://www.skateboardhere.com/shuvit.html"]
     },
     {
     "id": 4,
     "name": "Pop Shuvit",
     "difficulty": "Beginner",
     "category": "Pop",
-    "summary": "The rider pops and scoops the tail of the board then jumping to land on the board after it spins 180 degrees underneath them."
+    "summary": "The rider pops and scoops the tail of the board then jumping to land on the board after it spins 180 degrees underneath them.",
+    "resources": ["https://www.skateboardhere.com/pop-shuvit.html"]
     },
     {
     "id": 5,
     "name": "Heelflip",
     "difficulty": "Intermediate",
     "category": "Flip",
-    "summary": "The rider pops the tail of the board while sliding their foot up then flicking with their heel to flip the board underneath them."
+    "summary": "The rider pops the tail of the board while sliding their foot up then flicking with their heel to flip the board underneath them.",
+    "resources": ["https://www.skateboardhere.com/heelflip.html"]
     },
     {
     "id": 6,
     "name": "Kickflip",
     "difficulty": "Intermediate",
     "category": "Flip",
-    "summary": "The rider pops the tail of the board while sliding their foot up then flicking with their feet to flip the board underneath them."
+    "summary": "The rider pops the tail of the board while sliding their foot up then flicking with their feet to flip the board underneath them.",
+    "resources": ["https://www.skateboardhere.com/kickflip.html"]
     },
     {
     "id": 7,
     "name": "Varial Heelflip",
     "difficulty": "Expert",
     "category": "Flip",
-    "summary": "The rider combines a Heelflip with a Shuvit to flip the board while it spins 180° underneath them."
+    "summary": "The rider combines a Heelflip with a Shuvit to flip the board while it spins 180° underneath them.",
+    "resources": ["https://www.skateboardhere.com/varial-heelflip.html"]
     },
     {
     "id": 8,
     "name": "Varial Kickflip",
     "difficulty": "Expert",
     "category": "Flip",
-    "summary": "The rider combines a Kickflip with a Shuvit to flip the board while it spins 180° underneath them."
+    "summary": "The rider combines a Kickflip with a Shuvit to flip the board while it spins 180° underneath them.",
+    "resources": ["https://www.skateboardhere.com/varial-kickflip.html"]
     },
     {
     "id": 9,
     "name": "360 Flip (Tre flip)",
     "difficulty": "Expert",
     "category": "Flip",
-    "summary": "The rider pops the tail of the board, scooping and flicking it to flip it while it spins 360° underneath them."
+    "summary": "The rider pops the tail of the board, scooping and flicking it to flip it while it spins 360° underneath them.",
+    "resources": ["https://www.skateboardhere.com/360-flip.html"]
     }
 ]

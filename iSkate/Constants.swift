@@ -16,5 +16,6 @@ struct Constants {
     static let profileIconString = "person.crop.circle"
     static let settingsIconString = "gear"
     
-    static let testTrick = Trick(id: 0, name: "Ollie", difficulty: "Beginner", category: "Pop", summary: "The foundational trick of skateboarding. The rider pops the tail of the board while sliding their front foot up to jump into the air with the board.", isCompleted: false)
+    static let testTrick = Trick(id: 0, name: "Ollie", difficulty: "Beginner", category: "Pop", summary: "The foundational trick of skateboarding. The rider pops the tail of the board while sliding their front foot up to jump into the air with the board.", resources: ["https://www.skateboardhere.com/skateboard-ollie.html"], isCompleted: false)
 }
+

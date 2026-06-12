@@ -6,6 +6,7 @@
 //
 
 import SwiftData
+import Foundation
 
 @Model
 class Trick: Decodable, Identifiable, Hashable {
@@ -14,14 +15,19 @@ class Trick: Decodable, Identifiable, Hashable {
     var difficulty: String
     var category: String
     var summary: String
+    var resources: [String]?
     var isCompleted: Bool
     
-    init(id: Int, name: String, difficulty: String, category: String, summary: String, isCompleted: Bool) {
+    var cachedVideoIds: [String]?
+    var lastUpdated: Date?
+    
+    init(id: Int, name: String, difficulty: String, category: String, summary: String, resources: [String]?, isCompleted: Bool) {
         self.id = id
         self.name = name
         self.difficulty = difficulty
         self.category = category
         self.summary = summary
+        self.resources = resources
         self.isCompleted = isCompleted
     }
     
@@ -31,6 +37,7 @@ class Trick: Decodable, Identifiable, Hashable {
         case difficulty
         case category
         case summary
+        case resources
         case isCompleted
     }
     
@@ -41,6 +48,10 @@ class Trick: Decodable, Identifiable, Hashable {
         difficulty = try container.decodeIfPresent(String.self, forKey: .difficulty) ?? ""
         category = try container.decodeIfPresent(String.self, forKey: .category) ?? ""
         summary = try container.decodeIfPresent(String.self, forKey: .summary) ?? ""
+        resources = try container.decodeIfPresent(Array.self, forKey: .resources) ?? nil
         isCompleted = try container.decodeIfPresent(Bool.self, forKey: .isCompleted) ?? false
+        
+        self.cachedVideoIds = nil
+        self.lastUpdated = nil
     }
 }
