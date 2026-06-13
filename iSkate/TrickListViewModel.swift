@@ -11,13 +11,13 @@ import SwiftData
 func loadTricks() -> [Trick] {
     guard let url = Bundle.main.url(forResource: "tricks", withExtension: "json") else {
         print("Failed to locate tricks.json in bundle.")
-        return[]
+        return []
     }
     
     do {
         let data = try Data(contentsOf: url)
         let decoder = JSONDecoder()
-        return try decoder.decode([Trick].self, from:data)
+        return try decoder.decode([Trick].self, from: data)
     } catch {
         print("Error decoding JSON: \(error)")
         return []
@@ -27,23 +27,19 @@ func loadTricks() -> [Trick] {
 extension ModelContainer {
     @MainActor
     static var previewContainer: ModelContainer = {
-        let schema = Schema([Trick.self])
-        // Keep it strictly in-memory so it's fast and clears out every time the canvas reloads
+        let schema = Schema([TrickProgress.self])
         let configuration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
         
         do {
             let container = try ModelContainer(for: schema, configurations: [configuration])
             let context = container.mainContext
             
-            // Fetch your array of tricks using your existing bundle loader
-            let sampleTricks = loadTricks()
+            // OPTIONAL SEEDING FOR PREVIEWS:
+            // Since previews only track progress, we can seed a dummy completed state
+            // for the first trick (ID 0) just to make sure the preview canvas looks right.
+            let sampleProgress = TrickProgress(id: 0, isCompleted: true)
+            context.insert(sampleProgress)
             
-            // Insert them directly into the context immediately
-            for trick in sampleTricks {
-                context.insert(trick)
-            }
-            
-            // Save the context right away so the preview has immediate access
             try? context.save()
             return container
         } catch {

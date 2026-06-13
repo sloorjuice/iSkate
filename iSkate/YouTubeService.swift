@@ -7,6 +7,7 @@
 
 import Foundation
 internal import Combine
+import SwiftData
 
 // Models matching Google's YouTube Data API v3 search endpoint schema
 struct YouTubeSearchResponse: Decodable {
@@ -26,21 +27,25 @@ class YouTubeService: ObservableObject {
     @Published var isLoading = false
     @Published var errorMessage: String? = nil
     
-    func fetchTutorials(for trick: Trick) async {
-        // 1. Check if cache exists and is fresh (e.g., less than 7 days old)
-        if let cachedIds = trick.cachedVideoIds, !cachedIds.isEmpty,
-           let lastUpdated = trick.lastUpdated,
-              let expirationDate = Calendar.current.date(byAdding: .day, value: 7, to: lastUpdated),
-              expirationDate > Date() {
+    func fetchTutorials(for trick: Trick, modelContext: ModelContext) async {
+        let trickId = trick.id
+        
+        let fetchDescriptor = FetchDescriptor<TrickProgress>(predicate: #Predicate { $0.id == trickId })
+        let existingProgress = try? modelContext.fetch(fetchDescriptor).first
+
+        if let progress = existingProgress,
+           let cachedIds = progress.cachedVideoIds, !cachedIds.isEmpty,
+           let lastUpdated = progress.lastUpdated,
+           let expirationDate = Calendar.current.date(byAdding: .day, value: 7, to: lastUpdated),
+           expirationDate > Date() {
                
                await MainActor.run {
                    self.videoIds = cachedIds
                    self.isLoading = false
                }
-                return // Skip network call completely!
+                return
         }
         
-        // 2. If no valid cache, prepare for the API call
         await MainActor.run {
             self.isLoading = true
             self.errorMessage = nil
@@ -60,25 +65,20 @@ class YouTubeService: ObservableObject {
 
         do {
             let (data, response) = try await URLSession.shared.data(for: request)
-            
-            if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode != 200 {
-                throw NSError(domain: "YouTubeService", code: httpResponse.statusCode, userInfo: [NSLocalizedDescriptionKey: "Server returned error code \(httpResponse.statusCode)"])
-            }
-            
             let decodedResponse = try JSONDecoder().decode(YouTubeSearchResponse.self, from: data)
             let fetchedIds = decodedResponse.items.compactMap { $0.id.videoId }
             
             await MainActor.run {
-                // 3. Update local state
                 self.videoIds = fetchedIds
                 self.isLoading = false
                 
-                // 4. Persist data to SwiftData cache
-                trick.cachedVideoIds = fetchedIds
-                trick.lastUpdated = Date()
-                
-                // Saving is handled automatically by SwiftData's implicit context autosave,
-                // but if needed, context changes will propagate up smoothly.
+                if let progress = existingProgress {
+                    progress.cachedVideoIds = fetchedIds
+                    progress.lastUpdated = Date()
+                } else {
+                    let newProgress = TrickProgress(id: trickId, cachedVideoIds: fetchedIds, lastUpdated: Date())
+                    modelContext.insert(newProgress)
+                }
             }
         } catch {
             await MainActor.run {

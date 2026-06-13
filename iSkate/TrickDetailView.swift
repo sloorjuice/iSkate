@@ -9,7 +9,7 @@ import SwiftUI
 
 struct TrickDetailView: View {
     let trick: Trick
-    
+    @Environment(\.modelContext) var modelContext
     @StateObject private var youtubeService = YouTubeService()
     
     var body: some View {
@@ -28,7 +28,7 @@ struct TrickDetailView: View {
             .padding(8)
         }
         .task {
-            await youtubeService.fetchTutorials(for: trick)
+            await youtubeService.fetchTutorials(for: trick, modelContext: modelContext)
         }
     }
     

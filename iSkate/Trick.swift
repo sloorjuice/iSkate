@@ -5,12 +5,10 @@
 //  Created by Anthony Reynolds on 6/11/26.
 //
 
-import SwiftData
 import Foundation
 
-@Model
-class Trick: Decodable, Identifiable, Hashable {
-    @Attribute(.unique) var id: Int
+struct Trick: Decodable, Identifiable, Hashable {
+    var id: Int
     var name: String
     var difficulty: String
     var category: String
@@ -18,45 +16,12 @@ class Trick: Decodable, Identifiable, Hashable {
     var resources: [String]?
     var tips: [String]?
     
-    var isCompleted: Bool
-    
-    var cachedVideoIds: [String]?
-    var lastUpdated: Date?
-    
-    init(id: Int, name: String, difficulty: String, category: String, summary: String, resources: [String]?, tips: [String]?, isCompleted: Bool) {
-        self.id = id
-        self.name = name
-        self.difficulty = difficulty
-        self.category = category
-        self.summary = summary
-        self.resources = resources
-        self.tips = tips
-        self.isCompleted = isCompleted
-    }
-    
+    // UI-only computed states that we will attach during runtime
+    var isCompleted: Bool = false
+    var cachedVideoIds: [String]? = nil
+    var lastUpdated: Date? = nil
+
     enum CodingKeys: String, CodingKey {
-        case id
-        case name
-        case difficulty
-        case category
-        case summary
-        case resources
-        case tips
-        case isCompleted
-    }
-    
-    required init(from decoder: any Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        id = try container.decodeIfPresent(Int.self, forKey: .id) ?? 0
-        name = try container.decodeIfPresent(String.self, forKey: .name) ?? ""
-        difficulty = try container.decodeIfPresent(String.self, forKey: .difficulty) ?? ""
-        category = try container.decodeIfPresent(String.self, forKey: .category) ?? ""
-        summary = try container.decodeIfPresent(String.self, forKey: .summary) ?? ""
-        resources = try container.decodeIfPresent(Array.self, forKey: .resources) ?? nil
-        tips = try container.decodeIfPresent(Array.self, forKey: .tips) ?? nil
-        isCompleted = try container.decodeIfPresent(Bool.self, forKey: .isCompleted) ?? false
-        
-        self.cachedVideoIds = nil
-        self.lastUpdated = nil
+        case id, name, difficulty, category, summary, resources, tips
     }
 }
