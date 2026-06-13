@@ -80,6 +80,7 @@ struct TrickListView: View {
             .navigationDestination(for: Trick.self) { trick in
                 TrickDetailView(trick: trick)
             }
+            .navigationTitle("Trick List")
         }
     }
     

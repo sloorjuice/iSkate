@@ -10,11 +10,15 @@ import Foundation
 struct Constants {
     static let trickListString = "Trick List"
     static let skateMapString = "Skate Map"
+    static let messagesString = "Messages"
+    static let searchString = "Search"
     static let profileString = "Profile"
     static let settingsString = "Settings"
     
     static let trickListIconString = "skateboard"
     static let skateMapIconString = "map"
+    static let messagesIconString = "message"
+    static let searchIconString = "magnifyingglass"
     static let profileIconString = "person.crop.circle"
     static let settingsIconString = "gear"
     

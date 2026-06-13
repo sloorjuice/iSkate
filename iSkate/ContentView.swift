@@ -17,6 +17,8 @@ struct ContentView: View {
     enum TabIdentifier: String, Hashable {
         case tricks = "com.myapp.tricks"
         case map = "com.myapp.map"
+        case messages = "com.myapp.messages"
+        case search = "com.myapp.search"
         case profile = "com.myapp.profile"
     }
 
@@ -28,6 +30,14 @@ struct ContentView: View {
             
             Tab(Constants.skateMapString, systemImage: Constants.skateMapIconString, value: .map) {
                 SkateMapView()
+            }
+            
+            Tab(Constants.messagesString, systemImage: Constants.messagesIconString, value: .messages) {
+                Text(Constants.messagesString)
+            }
+            
+            Tab(Constants.searchString, systemImage: Constants.searchIconString, value: .search) {
+                Text(Constants.searchString)
             }
             
             Tab(Constants.profileString, systemImage: Constants.profileIconString, value: .profile) {
