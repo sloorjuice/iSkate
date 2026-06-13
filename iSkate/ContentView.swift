@@ -8,19 +8,34 @@
 import SwiftUI
 import SwiftData
 
+import SwiftUI
+import SwiftData
+
 struct ContentView: View {
+    @State private var selectedTab: TabIdentifier = .tricks
+    
+    enum TabIdentifier: String, Hashable {
+        case tricks = "com.myapp.tricks"
+        case map = "com.myapp.map"
+        case profile = "com.myapp.profile"
+    }
+
     var body: some View {
-        TabView {
-            Tab(Constants.trickListString, systemImage: Constants.trickListIconString) {
+        TabView(selection: $selectedTab) {
+            Tab(Constants.trickListString, systemImage: Constants.trickListIconString, value: .tricks) {
                 TrickListView()
             }
-            Tab(Constants.profileString, systemImage: Constants.profileIconString) {
+            
+            Tab(Constants.skateMapString, systemImage: Constants.skateMapIconString, value: .map) {
+                SkateMapView()
+            }
+            
+            Tab(Constants.profileString, systemImage: Constants.profileIconString, value: .profile) {
                 Text(Constants.profileString)
             }
-            Tab(Constants.settingsString, systemImage: Constants.settingsIconString) {
-                Text(Constants.settingsString)
-            }
         }
+        .tabViewStyle(.sidebarAdaptable)
+        .tabBarMinimizeBehavior(.onScrollDown)
     }
 }
 
