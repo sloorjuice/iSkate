@@ -7,7 +7,7 @@
 
 import Foundation
 internal import Combine
-import SwiftData
+import Supabase
 
 // Models matching Google's YouTube Data API v3 search endpoint schema
 struct YouTubeSearchResponse: Decodable {
@@ -22,41 +22,37 @@ struct YouTubeVideoId: Decodable {
     let videoId: String?
 }
 
+@MainActor
 class YouTubeService: ObservableObject {
     @Published var videoIds: [String] = []
     @Published var isLoading = false
     @Published var errorMessage: String? = nil
     
-    func fetchTutorials(for trick: Trick, modelContext: ModelContext) async {
+    func fetchTutorials(for trick: Trick) async {
         let trickId = trick.id
         
-        let fetchDescriptor = FetchDescriptor<TrickProgress>(predicate: #Predicate { $0.id == trickId })
-        let existingProgress = try? modelContext.fetch(fetchDescriptor).first
-
-        if let progress = existingProgress,
-           let cachedIds = progress.cachedVideoIds, !cachedIds.isEmpty,
-           let lastUpdated = progress.lastUpdated,
+        if let cachedIds = trick.cachedVideoIds, !cachedIds.isEmpty,
+            let lastUpdated = trick.lastUpdated,
            let expirationDate = Calendar.current.date(byAdding: .day, value: 7, to: lastUpdated),
            expirationDate > Date() {
-               
-               await MainActor.run {
-                   self.videoIds = cachedIds
-                   self.isLoading = false
-               }
+                self.videoIds = cachedIds
+                self.isLoading = false
                 return
         }
-        
-        await MainActor.run {
-            self.isLoading = true
-            self.errorMessage = nil
-        }
+
+        self.isLoading = true
+        self.errorMessage = nil
         
         let searchQuery = "How to \(trick.name) skateboarding tutorial"
-        let encodedQuery = searchQuery.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+        guard let encodedQuery = searchQuery.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
+            self.isLoading = false
+            return
+        }
+        
         let urlString = "https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=3&q=\(encodedQuery)&type=video&key=\(Secrets.youtubeAPIKey)"
         
         guard let url = URL(string: urlString) else {
-            await MainActor.run { self.isLoading = false }
+            self.isLoading = false
             return
         }
 
@@ -68,23 +64,41 @@ class YouTubeService: ObservableObject {
             let decodedResponse = try JSONDecoder().decode(YouTubeSearchResponse.self, from: data)
             let fetchedIds = decodedResponse.items.compactMap { $0.id.videoId }
             
-            await MainActor.run {
-                self.videoIds = fetchedIds
+            self.videoIds = fetchedIds
+            
+            guard let userId = SupabaseManager.client.auth.currentSession?.user.id else {
                 self.isLoading = false
-                
-                if let progress = existingProgress {
-                    progress.cachedVideoIds = fetchedIds
-                    progress.lastUpdated = Date()
-                } else {
-                    let newProgress = TrickProgress(id: trickId, cachedVideoIds: fetchedIds, lastUpdated: Date())
-                    modelContext.insert(newProgress)
-                }
+                return
             }
+            
+            let existingRecords: [RemoteTrickProgress] = try await SupabaseManager.client
+                .from("user_trick_progress")
+                .select()
+                .eq("user_id", value: userId.uuidString)
+                .eq("trick_id", value: trickId)
+                .execute()
+                .value
+            
+            let existingId = existingRecords.first?.id
+            
+            let updatePayload = RemoteTrickProgress(
+                id: existingId,
+                userId: userId,
+                trickId: trickId,
+                isCompleted: trick.isCompleted,
+                cachedVideoIds: fetchedIds,
+                lastUpdated: Date()
+            )
+            
+            try await SupabaseManager.client
+                .from("user_trick_progress")
+                .upsert(updatePayload)
+                .execute()
+            
+            self.isLoading = false
         } catch {
-            await MainActor.run {
-                self.errorMessage = error.localizedDescription
-                self.isLoading = false
-            }
+            self.errorMessage = error.localizedDescription
+            self.isLoading = false
         }
     }
 }

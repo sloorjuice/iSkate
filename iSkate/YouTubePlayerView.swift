@@ -25,13 +25,12 @@ struct YouTubePlayerView: UIViewRepresentable {
     func updateUIView(_ uiView: WKWebView, context: Context) {
         guard let url = URL(string: "https://www.youtube.com/embed/\(videoId)?playsinline=1") else { return }
         
-        // 1. Change 'let' to 'var' to allow modifications
+        if uiView.url?.absoluteString == url.absoluteString {
+            return
+        }
+        
         var request = URLRequest(url: url)
-        
-        // 2. Inject the Referer header here as well
         request.setValue("https://your-authorized-domain.com", forHTTPHeaderField: "Referer")
-        
-        // 3. Load the modified request
         uiView.load(request)
     }
 }

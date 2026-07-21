@@ -6,10 +6,6 @@
 //
 
 import SwiftUI
-import SwiftData
-
-import SwiftUI
-import SwiftData
 
 struct ContentView: View {
     @State private var selectedTab: TabIdentifier = .tricks
@@ -41,7 +37,7 @@ struct ContentView: View {
             }
             
             Tab(Constants.profileString, systemImage: Constants.profileIconString, value: .profile) {
-                Text(Constants.profileString)
+                ProfileView()
             }
         }
         .tabViewStyle(.sidebarAdaptable)
@@ -51,5 +47,4 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
-        .modelContainer(.previewContainer)
 }

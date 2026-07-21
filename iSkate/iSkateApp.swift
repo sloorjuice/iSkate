@@ -6,26 +6,29 @@
 //
 
 import SwiftUI
-import SwiftData
 
 @main
 struct iSkateApp: App {
-    var sharedModelContainer: ModelContainer = {
-        let schema = Schema([TrickProgress.self])
-        let isPreview = ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: isPreview)
-
-        do {
-            return try ModelContainer(for: schema, configurations: [modelConfiguration])
-        } catch {
-            fatalError("Could not create ModelContainer: \(error)")
-        }
-    }()
+    @StateObject private var authManager = AuthManager()
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            Group {
+                if authManager.isLoading {
+                    ProgressView("Loading your skate profile...")
+                        .progressViewStyle(.circular)
+                } else if authManager.session != nil {
+                    ContentView()
+                } else {
+                    AuthView()
+                }
+            }
+            .environmentObject(authManager)
+            .onOpenURL { url in
+                Task {
+                    await authManager.handleDeepLink(url: url)
+                }
+            }
         }
-        .modelContainer(sharedModelContainer)
     }
 }
